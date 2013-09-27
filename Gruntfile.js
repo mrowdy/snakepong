@@ -46,11 +46,17 @@ module.exports = function(grunt) {
                     'build/snakepong.min.css': 'sass/main.scss'
                 }
             }
+        },
+        exec: {
+            git_add:{
+                command: 'git add .'
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-banner');
-    grunt.registerTask('default', ['requirejs', 'sass', 'usebanner']);
+    grunt.loadNpmTasks('grunt-exec');
+    grunt.registerTask('default', ['requirejs', 'sass', 'usebanner', 'exec']);
 };
