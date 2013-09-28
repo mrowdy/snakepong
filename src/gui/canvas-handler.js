@@ -4,7 +4,7 @@ define(["app/core"], function(core) {
         var width,
             height,
             listener = [],
-            resizeTimeout = 300,
+            resizeTimeout = 200,
             resizeCallback = null;
 
 
@@ -14,6 +14,7 @@ define(["app/core"], function(core) {
 
         var init = function(){
             eventBindings();
+            resizeCanvas();
         }
 
         var eventBindings = function(){
@@ -26,10 +27,14 @@ define(["app/core"], function(core) {
             }
 
             resizeCallback = window.setTimeout( function(){
-                getSize();
-                setSize();
-                notify();
+                resize();
             }, resizeTimeout);
+        }
+
+        var resize = function(){
+            getSize();
+            setSize();
+            notify();
         }
 
         var getSize = function(){
