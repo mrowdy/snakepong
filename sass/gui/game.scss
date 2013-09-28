@@ -1,0 +1,15 @@
+.game {
+  margin: 15px 0;
+  padding: 2px;
+  width: 100%;
+  max-width: $maxWidth;
+  background: $fontColor;
+  @include box-shadow(0 0 15px 1px $fontColor);
+
+  canvas {
+    background-color: black;
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}

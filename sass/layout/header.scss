@@ -1,0 +1,26 @@
+.header {
+  margin: 0;
+  padding: 0;
+  position: relative;
+
+  span {
+    display: block;
+  }
+
+  nav {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    ul{
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      @include clearfix;
+      li {
+        float: left;
+        margin: 0;
+        padding: 0;
+      }
+    }
+  }
+}
