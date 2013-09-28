@@ -5,6 +5,10 @@ define(function() {
 
         }
 
+        this.canvasChange = function(width, height){
+            console.log('canvas change received: ' + width + ':' + height);
+        }
+
         init();
     }
 });

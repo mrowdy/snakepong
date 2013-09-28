@@ -1,0 +1,24 @@
+@media (max-width: $bpMedium) {
+
+  .header {
+    nav {
+      margin: 15px 0 0 0;
+      padding: 0;
+      position: static;
+      width: 100%;
+      ul {
+        li {
+          width: percentage(1/3);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: $bpSmall) {
+  .header {
+    h1 {
+      font-size: 3rem;
+    }
+  }
+}

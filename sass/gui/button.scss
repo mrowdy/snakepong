@@ -10,6 +10,7 @@
   display: block;
   text-decoration: none;
   text-shadow: none;
+  text-align: center;
 
   @include gradient-vertical(#1b1e23, #111214);
   @include transition(all .5s);
@@ -17,11 +18,14 @@
   &:hover,
   &.active {
     @include gradient-horizontal(#f1f3f0, #bfc1bc);
-    @include scale(1.1);
-    @include box-shadow(0 0 5px 1px #5990b7);
     color: black;
     text-decoration: none;
     border: 2px solid #ffffff;
+  }
+
+  &:hover {
+    @include scale(1.1);
+    @include box-shadow(0 0 5px 1px #5990b7);
   }
 
 }
