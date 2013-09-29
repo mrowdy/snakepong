@@ -11,6 +11,10 @@ define(['app/core', 'game/loop'], function(core, Loop) {
             fpsList.push(fps);
         }
 
+        this.reset = function(){
+            fpsList = [];
+        }
+
         var init = function(){
             loop = new Loop({
                 renderCallback: render

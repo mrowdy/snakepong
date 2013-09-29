@@ -72,6 +72,7 @@ define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render2D', 'g
             $stop.onclick = function(){
                 loop.stop();
                 initGame();
+                debug.reset();
             }
 
             $boundingToggle = core.dom.el('nav .boundingToggle', $debug);

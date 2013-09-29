@@ -82,11 +82,17 @@ define(['app/core'], function(core) {
                 renderBoundingBox(item.bounds);
             }
 
-
-
             context.translate(posX, $canvas.height - posY);
             context.fillStyle = getColor(item.TYPE);
-            context.fillRect(-width / 2, -height / 2, width, height);
+
+            /*if(item.TYPE == 'BALL'){
+                context.beginPath();
+                context.arc(item.radius / 2, 0,  item.radius, 0, Math.PI*2, true);
+                context.fill();
+                context.closePath();
+            } else {*/
+                context.fillRect(-width / 2, -height / 2, width, height);
+            //}
             context.translate(posX * -1, ($canvas.height - posY) * -1);
 
         }
@@ -106,7 +112,7 @@ define(['app/core'], function(core) {
             var color;
             switch(type){
                 case 'BALL':
-                    color = '#ff0000';
+                    color = '#00ff00';
                     break;
                 case 'PLAYER':
                     color = '#0000ff';

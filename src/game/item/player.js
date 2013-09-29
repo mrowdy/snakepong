@@ -6,7 +6,9 @@ define(['app/core', 'game/vector2', 'game/collision/rectangle'], function(core, 
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
         this.speed = 1;
-        this.friction = 0.001;
+        this.friction = 0;
+        this.affectedByGravity = false;
+        this.static = true;
 
         this.bounds = new bRect(x, y, width, height);
 
@@ -18,8 +20,8 @@ define(['app/core', 'game/vector2', 'game/collision/rectangle'], function(core, 
             this.velocity.mulScalar( 1 - this.friction);
         }
 
-        this.addForce = function(){
-
+        this.addForce = function(v){
+            this.velocity.add(v);
         }
     }
 });
