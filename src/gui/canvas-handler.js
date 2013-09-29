@@ -12,6 +12,10 @@ define(["app/core"], function(core) {
             listener.push(obj);
         }
 
+        this.update = function(){
+            resizeCanvas();
+        }
+
         var init = function(){
             eventBindings();
             resizeCanvas();

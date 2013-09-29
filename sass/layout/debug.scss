@@ -6,6 +6,7 @@
   background: #000000;
   left: 0;
   padding: 0;
+  z-index: 99;
   @include transition(bottom .5s);
 
   &.show {
@@ -21,13 +22,7 @@
     }
   }
 
-  code {
-    padding: 20px;
-    margin: 0;
-    float: left;
-    pre {
-      margin: 0;
-      padding: 0;
-    }
+  canvas {
+    margin: 10px;
   }
 }

@@ -1,4 +1,4 @@
-define(['app/core', 'game/loop', 'game/world', 'game/render2D', 'game/camera'], function(core, Loop, World, Renderer, Camera) {
+define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render2D', 'game/camera'], function(core, Loop, Debug, World, Renderer, Camera) {
     return function($canvas){
 
         var loop,
@@ -6,19 +6,29 @@ define(['app/core', 'game/loop', 'game/world', 'game/render2D', 'game/camera'], 
             players,
             ball,
             renderer,
-            camera;
+            camera,
+            debug;
+
+        var $debug = core.dom.el('#debug');
+        var $fps = core.dom.el('.fps', $debug);
 
         var init = function(){
             renderer = new Renderer($canvas);
-            camera = new Camera(100, 100);
-            world = new World(640, 480);
+            initGame();
 
             loop = new Loop({
                 updateCallback: update,
-                renderCallback: render
+                renderCallback: render,
+                fpsCallback: showFps
             });
 
+            initDebug();
             loop.start();
+        }
+
+        var initGame = function(){
+            world = new World();
+            camera = new Camera(150, 100, 300, 200);
         }
 
         var update = function(deltaTime){
@@ -35,6 +45,36 @@ define(['app/core', 'game/loop', 'game/world', 'game/render2D', 'game/camera'], 
 
         this.canvasChange = function(width, height){
             renderer.initCanvas();
+        }
+
+        var showFps = function(fps){
+            $fps.innerHTML = fps.toFixed(2);
+            debug.addFps(fps);
+        }
+
+        var initDebug = function(){
+            $start = core.dom.el('nav .start', $debug);
+            $start.onclick = function(){
+                loop.start();
+            }
+
+            $pause = core.dom.el('nav .pause', $debug);
+            $pause.onclick = function(){
+                loop.pause();
+            }
+
+            $resume = core.dom.el('nav .resume', $debug);
+            $resume.onclick = function(){
+                loop.resume();
+            }
+
+            $stop = core.dom.el('nav .stop', $debug);
+            $stop.onclick = function(){
+                loop.stop();
+                initGame();
+            }
+
+            debug = new Debug(core.dom.el('#debugFps', $debug));
         }
 
         init();

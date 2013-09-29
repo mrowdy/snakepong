@@ -4,6 +4,7 @@
   width: 100%;
   max-width: $maxWidth;
   background: $fontColor;
+  position: relative;
   @include box-shadow(0 0 15px 1px $fontColor);
 
   canvas {
@@ -11,6 +12,26 @@
     width: 100%;
     height: auto;
     display: block;
+  }
+
+  .toggleFullscreen {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+  }
+
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
   }
 }
 
