@@ -6,7 +6,8 @@ define(['app/core'], function(core) {
             camera,
             scale,
             offsetX = 0,
-            offsetY = 0;
+            offsetY = 0,
+            showBoundingBoxes = false;
 
         var init = function(){
             context = $canvas.getContext('2d');
@@ -15,6 +16,10 @@ define(['app/core'], function(core) {
 
         this.initCanvas = function(){
             scale = false;
+        }
+
+        this.toggleBoundingBoxes = function(){
+            showBoundingBoxes = !showBoundingBoxes;
         }
 
         this.init = function(){
@@ -80,10 +85,9 @@ define(['app/core'], function(core) {
             var width = worldToCanvas(item.size.x);
             var height = worldToCanvas(item.size.y);
 
-            if(item.bounds){
+            if(showBoundingBoxes && item.bounds){
                 renderBoundingBox(item.bounds);
             }
-
 
             context.translate(posX, $canvas.height - posY);
             context.fillStyle = getColor(item.TYPE);

@@ -74,6 +74,11 @@ define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render2D', 'g
                 initGame();
             }
 
+            $boundingToggle = core.dom.el('nav .boundingToggle', $debug);
+            $boundingToggle.onclick = function(){
+                renderer.toggleBoundingBoxes();
+            }
+
             debug = new Debug(core.dom.el('#debugFps', $debug));
         }
 
