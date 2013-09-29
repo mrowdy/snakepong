@@ -4,7 +4,7 @@ define(['app/core', 'game/vector2', 'game/collision/rectangle'], function(core, 
         this.TYPE = 'PLAYER';
         this.size = new Vector2(width, height);
         this.position = new Vector2(x, y);
-        this.velocity = new Vector2(0, 1);
+        this.velocity = new Vector2(0, 0);
         this.speed = 1;
         this.friction = 0.001;
 
@@ -16,6 +16,10 @@ define(['app/core', 'game/vector2', 'game/collision/rectangle'], function(core, 
             this.position.add(acceleration);
             this.bounds.set(this.position);
             this.velocity.mulScalar( 1 - this.friction);
+        }
+
+        this.addForce = function(){
+
         }
     }
 });

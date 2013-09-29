@@ -35,17 +35,10 @@ define(['app/core'], function(core) {
             }
 
             clear();
-
             renderCamera();
-            renderItem(world.ball);
-            for(var i = 0; i < world.player.length; i++){
-                renderItem(world.player[i]);
+            for(var i = 0; i < world.items.length; i++){
+                renderItem(world.items[i]);
             }
-
-            for(var i = 0; i < world.wall.length; i++){
-                renderItem(world.wall[i]);
-            }
-
         }
 
         var clear = function(){
@@ -88,6 +81,8 @@ define(['app/core'], function(core) {
             if(showBoundingBoxes && item.bounds){
                 renderBoundingBox(item.bounds);
             }
+
+
 
             context.translate(posX, $canvas.height - posY);
             context.fillStyle = getColor(item.TYPE);

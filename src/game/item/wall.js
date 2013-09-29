@@ -12,5 +12,9 @@ define(['app/core', 'game/vector2', 'game/collision/rectangle'], function(core, 
         this.update = function(deltaTime){
 
         }
+
+        this.addForce = function(){
+
+        }
     }
 });
