@@ -30,7 +30,6 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
                 }
 
                 checkRectRectCollision(item, item2);
-
             }
         }
 
