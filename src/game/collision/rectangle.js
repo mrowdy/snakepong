@@ -1,4 +1,4 @@
-define(['app/core', 'game/vector2', 'game/collision/polygon'], function(core, Vector2, Polygon) {
+define(['app/core', 'game/math/vector2', 'game/collision/polygon'], function(core, Vector2, Polygon) {
     return function(x, y, width, height){
 
         this.TYPE = 'RECT';

@@ -1,4 +1,4 @@
-define(['app/core', 'game/vector2'], function(core, Vector2) {
+define(['app/core', 'game/math/vector2'], function(core, Vector2) {
     return function(){
 
         this.a = null;

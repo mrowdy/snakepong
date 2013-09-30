@@ -1,4 +1,4 @@
-define(['app/core', 'game/vector2', 'game/collision/sat', 'game/collision/response'], function(core, Vector2, Sat, Response) {
+define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/response'], function(core, Vector2, Sat, Response) {
     return function(){
 
         var items,
@@ -72,13 +72,7 @@ define(['app/core', 'game/vector2', 'game/collision/sat', 'game/collision/respon
             response.clear();
 
             intersecting = false;
-            if(item1.bounds.TYPE == 'RECT' && item2.bounds.TYPE == 'RECT'){
-                intersecting = sat.testPolygonPolygon(item1.bounds.toPolygon(), item2.bounds.toPolygon(), response);
-            } else if(item1.bounds.TYPE == 'RECT' && item2.bounds.TYPE == 'CIRCLE'){
-                intersecting = sat.testPolygonCircle(item1.bounds.toPolygon(), item2.bounds, response);
-            } else if(item1.bounds.TYPE == 'CIRCLE' && item2.bounds.TYPE == 'RECT'){
-                intersecting = sat.testCirclePolygon(item1.bounds, item2.bounds.toPolygon(), response);
-            }
+            intersecting = sat.testPolygonPolygon(item1.bounds.toPolygon(), item2.bounds.toPolygon(), response);
 
             if(intersecting){
                 item1.position.sub(response.overlapV);

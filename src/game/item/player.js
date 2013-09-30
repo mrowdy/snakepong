@@ -1,4 +1,4 @@
-define(['app/core', 'game/vector2', 'game/collision/rectangle'], function(core, Vector2, bRect) {
+define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(core, Vector2, bRect) {
     return function(x, y, width, height){
 
         this.TYPE = 'PLAYER';

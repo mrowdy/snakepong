@@ -1,8 +1,14 @@
 define(['app/core'], function(core) {
     return function(x, y){
 
-        this.x = x || 0;
-        this.y = y || 0;
+        if(typeof x === 'object'){
+            this.x = x.x || 0;
+            this.y = x.y || 0;
+        } else {
+            this.x = x || 0;
+            this.y = y || 0;
+        }
+
 
         this.reset = function(x, y ) {
             this.x = x;
@@ -55,8 +61,13 @@ define(['app/core'], function(core) {
         }
 
         this.mul = function(v){
-            this.x *= v.x;
-            this.y *= v.y;
+            if(typeof v === 'object'){
+                this.x *= v.x;
+                this.y *= v.y;
+            } else {
+                this.x *= v;
+            }   this.y *= v;
+
             return this;
         }
 
@@ -138,5 +149,10 @@ define(['app/core'], function(core) {
             return Math.sqrt(this.len2());
         }
 
+        this.distance = function(v){
+            var len = this.sub(v).len();
+            this.add(v);
+            return len;
+        }
     }
 });

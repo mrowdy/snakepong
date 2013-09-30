@@ -85,14 +85,15 @@ define(['app/core'], function(core) {
             context.translate(posX, $canvas.height - posY);
             context.fillStyle = getColor(item.TYPE);
 
-            /*if(item.TYPE == 'BALL'){
+            if(item.TYPE == 'BALL'){
+
                 context.beginPath();
-                context.arc(item.radius / 2, 0,  item.radius, 0, Math.PI*2, true);
+                context.arc(0, 0,  worldToCanvas(item.radius), 0, Math.PI*2, true);
                 context.fill();
                 context.closePath();
-            } else {*/
+            } else {
                 context.fillRect(-width / 2, -height / 2, width, height);
-            //}
+            }
             context.translate(posX * -1, ($canvas.height - posY) * -1);
 
         }

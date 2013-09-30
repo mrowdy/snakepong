@@ -1,4 +1,4 @@
-define(['app/core', 'game/vector2', 'game/collision/rectangle'], function(core, Vector2, bRectangle) {
+define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(core, Vector2, bRectangle) {
     return function(x, y, radius){
 
         this.TYPE = 'BALL';
@@ -10,7 +10,7 @@ define(['app/core', 'game/vector2', 'game/collision/rectangle'], function(core, 
         this.friction = 0.001;
         this.affectedByGravity = true;
 
-        this.bounds = new bRectangle(x, y, radius * 2, radius * 2);
+        this.bounds = new bRectangle(x, y, radius*2, radius*2);
 
         this.update = function(deltaTime){
             var acceleration = new Vector2(this.velocity.x, this.velocity.y);
