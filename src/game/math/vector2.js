@@ -154,5 +154,6 @@ define(['app/core'], function(core) {
             this.add(v);
             return len;
         }
+
     }
 });

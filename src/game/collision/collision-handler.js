@@ -76,6 +76,13 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
 
             if(intersecting){
                 item1.position.sub(response.overlapV);
+                item1.velocity.reflect(response.overlapN.perp());
+                if(item1.hasOwnProperty('collision')){
+                    item1.collision(item2);
+                }
+                if(item2.hasOwnProperty('collision')){
+                    item2.collision(item1);
+                }
             }
         }
 

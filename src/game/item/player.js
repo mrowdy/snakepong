@@ -23,5 +23,11 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
         this.addForce = function(v){
             this.velocity.add(v);
         }
+
+        this.collision = function(other){
+            if(other.TYPE == 'BALL'){
+
+            }
+        }
     }
 });

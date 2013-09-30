@@ -16,9 +16,7 @@ define(
             this.size = new Vector2(300, 200);
             this.gravity = new Vector2(0, 0);
 
-
             this.items = [
-                new Ball(this.size.x / 2, this.size.y / 2, 10),
 
                 new Player(10, this.size.y / 2, 10, 40),
                 new Player(this.size.x - 10, this.size.y / 2, 10, 40),
@@ -27,6 +25,10 @@ define(
                 new Wall(this.size.x / 2, this.size.y - 2.5, this.size.x, 5),
                 //new Wall(this.size.x - 2.5, this.size.y / 2, 5, this.size.y)
             ];
+
+            var ball = new Ball(this.size.x / 2, this.size.y / 2, 10);
+            ball.velocity = new Vector2(Math.random() * 5, Math.random() * 5);
+            this.items.push(ball);
 
             var collisionHandler;
 

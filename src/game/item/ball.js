@@ -7,7 +7,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
         this.speed = 1;
-        this.friction = 0.001;
+        this.friction = 0.000;
         this.affectedByGravity = true;
 
         this.bounds = new bRectangle(x, y, radius*2, radius*2);
