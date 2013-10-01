@@ -40,8 +40,8 @@ define(
                wallTop = new Wall(this.size.x / 2, 2.5, this.size.x, 5);
                wallBottom = new Wall(this.size.x / 2, this.size.y - 2.5, this.size.x, 5);
                ball = new Ball(this.size.x / 2, this.size.y / 2, 10);
-               player1 = new Player(10, this.size.y / 2, 10, 40);
-               player2 = new Player(this.size.x - 10, this.size.y / 2, 10, 40);
+               player1 = new Player(5, this.size.y / 2, 3, 40);
+               player2 = new Player(this.size.x - 5, this.size.y / 2, 3, 40);
 
                this.initBall();
 
@@ -64,7 +64,7 @@ define(
 
             this.initBall = function(){
                 ball.position = new Vector2(this.size.x / 2, this.size.y / 2);
-                ball.velocity = new Vector2(Math.random() * 4, Math.random() * 4);
+                ball.velocity = new Vector2(-3, -3);
             }
 
             this.initWorld();
