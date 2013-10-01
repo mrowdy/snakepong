@@ -16,6 +16,9 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
             for(var i = 0; i < items.length; i++){
                 item = items[i];
                 checkCollisionOfItem();
+                if(item.static){
+                    continue;
+                }
             }
         }
 
@@ -23,9 +26,6 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
             for(var i = 0; i < items.length; i++){
                 var item2 = items[i];
                 if(item === item2){
-                    continue;
-                }
-                if(item.static && !item2.static){
                     continue;
                 }
 
@@ -74,8 +74,10 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
             intersecting = sat.testPolygonPolygon(item1.bounds.toPolygon(), item2.bounds.toPolygon(), response);
 
             if(intersecting){
-                //item1.position.sub(response.overlapV);
+
+                item1.position.sub(response.overlapV);
                 item1.velocity.reflect(response.overlapN.perp());
+
                 if(item1.hasOwnProperty('collision')){
                     item1.collision(item2);
                 }

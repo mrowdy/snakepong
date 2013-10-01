@@ -67,15 +67,20 @@ define(
                 ball.velocity = new Vector2(-3, -3);
             }
 
+            this.initPlayer = function(){
+                player1.speed = 2;
+                player2.speed = 2;
+            }
+
             this.initWorld();
 
             var init = function(){
                 collisionHandler = new CollisionHandler();
                 keyboardController = new KeyboardController({
-                    87 : function(){ player1.addForce(new Vector2(0,3)); },
-                    83 : function(){ player1.addForce(new Vector2(0,-3)); },
-                    38 : function(){ player2.addForce(new Vector2(0,3)); },
-                    40 : function(){ player2.addForce(new Vector2(0,-3)); }
+                    87 : function(){ player1.up(); },
+                    83 : function(){ player1.down(); },
+                    38 : function(){ player2.up(); },
+                    40 : function(){ player2.down(); }
                 }, 100);
             }
 
@@ -112,6 +117,7 @@ define(
             var newRound = function(){
                 instance.roundOver = false;
                 instance.initBall();
+                instance.initPlayer();
             }
 
             init();
