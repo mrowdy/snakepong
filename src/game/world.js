@@ -16,24 +16,58 @@ define(
 
             this.size = new Vector2(300, 200);
             this.gravity = new Vector2(0, 0);
+            this.roundOver = true;
+            this.round = 1;
 
-            this.items = [
-                new Wall(this.size.x / 2, 2.5, this.size.x, 5),
-                new Wall(this.size.x / 2, this.size.y - 2.5, this.size.x, 5),
-            ];
+            this.items = [];
 
-            var ball = new Ball(this.size.x / 2, this.size.y / 2, 10);
-            ball.velocity = new Vector2(Math.random() * 10, Math.random() * 10);
-            this.items.push(ball);
-
-            var player1 = new Player(10, this.size.y / 2, 10, 40);
-            var player2 = new Player(this.size.x - 10, this.size.y / 2, 10, 40);
-
-            this.items.push(player1);
-            this.items.push(player2);
+            var instance = this,
+                wallLeft,
+                wallRight,
+                wallTop,
+                wallBottom,
+                ball,
+                player1,
+                player2;
 
             var collisionHandler;
             var keyboardController;
+
+            this.initWorld = function(){
+               this.items = [];
+               wallLeft = new Wall(-5, this.size.y / 2, 5, this.size.y);
+               wallRight = new Wall(this.size.x + 5, this.size.y / 2, 5, this.size.y);
+               wallTop = new Wall(this.size.x / 2, 2.5, this.size.x, 5);
+               wallBottom = new Wall(this.size.x / 2, this.size.y - 2.5, this.size.x, 5);
+               ball = new Ball(this.size.x / 2, this.size.y / 2, 10);
+               player1 = new Player(10, this.size.y / 2, 10, 40);
+               player2 = new Player(this.size.x - 10, this.size.y / 2, 10, 40);
+
+               this.initBall();
+
+               this.items.push(wallLeft);
+               this.items.push(wallRight);
+               this.items.push(wallTop);
+               this.items.push(wallBottom);
+               this.items.push(ball);
+               this.items.push(player1);
+               this.items.push(player2);
+
+
+               wallLeft.collision = function(other){
+                   ballHitsEnd(other);
+               }
+               wallRight.collision = function(other){
+                   ballHitsEnd(other);
+               }
+            }
+
+            this.initBall = function(){
+                ball.position = new Vector2(this.size.x / 2, this.size.y / 2);
+                ball.velocity = new Vector2(Math.random() * 4, Math.random() * 4);
+            }
+
+            this.initWorld();
 
             var init = function(){
                 collisionHandler = new CollisionHandler();
@@ -56,12 +90,28 @@ define(
 
                 collisionHandler.check(this.items);
 
+                if(this.roundOver){
+                    newRound();
+                }
+
             }
 
             var addGravity = function(item, deltaG){
                 if(item.affectedByGravity){
                     item.addForce(deltaG);
                 }
+            }
+
+            var ballHitsEnd = function(other){
+                if(other.TYPE = 'BALL'){
+                    instance.round++;
+                    instance.roundOver = true;
+                }
+            }
+
+            var newRound = function(){
+                instance.roundOver = false;
+                instance.initBall();
             }
 
             init();

@@ -9,6 +9,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
         this.friction = 0.0011;
         this.affectedByGravity = false;
         this.static = true;
+        this.ballTouches = 0;
 
         this.bounds = new bRect(x, y, width, height);
 
@@ -26,7 +27,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
 
         this.collision = function(other){
             if(other.TYPE == 'BALL'){
-
+                this.ballTouches++;
             }
         }
     }
