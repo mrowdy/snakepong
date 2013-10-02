@@ -38,8 +38,8 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
         this.collision = function(other){
             if(other.TYPE == 'BALL'){
                 this.ballTouches++;
-                this.speed *= 1.1;
-                other.velocity.mul(1.1);
+                //this.speed *= 1.1;
+                //other.velocity.mul(1.1);
             }
         }
     }

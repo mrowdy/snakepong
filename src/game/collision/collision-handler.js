@@ -15,6 +15,9 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
             items = itemsToCheck;
             for(var i = 0; i < items.length; i++){
                 item = items[i];
+                if(item.TYPE == 'TAIL'){
+                    continue;
+                }
                 checkCollisionOfItem();
                 if(item.static){
                     continue;
@@ -26,6 +29,9 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
             for(var i = 0; i < items.length; i++){
                 var item2 = items[i];
                 if(item === item2){
+                    continue;
+                }
+                if(item2.TYPE == 'TAIL'){
                     continue;
                 }
 
@@ -75,8 +81,14 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
 
             if(intersecting){
 
-                item1.position.sub(response.overlapV);
-                item1.velocity.reflect(response.overlapN.perp());
+                if(item1.TYPE == 'TAIL' || item2.TYPE == 'TAIL'){
+                    return;
+                }
+
+                if(!item2.noCollision){
+                    item1.position.sub(response.overlapV);
+                    item1.velocity.reflect(response.overlapN.perp());
+                }
 
                 if(item1.hasOwnProperty('collision')){
                     item1.collision(item2);

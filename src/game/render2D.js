@@ -85,7 +85,7 @@ define(['app/core'], function(core) {
             context.translate(posX, $canvas.height - posY);
             context.fillStyle = getColor(item.TYPE);
 
-            if(item.TYPE == 'BALL'){
+            if(item.TYPE == 'BALL' || item.TYPE == 'TAIL' ){
 
                 context.beginPath();
                 context.arc(0, 0,  worldToCanvas(item.radius), 0, Math.PI*2, true);
@@ -120,6 +120,9 @@ define(['app/core'], function(core) {
                     break;
                 case 'WALL':
                     color = '#00ff00';
+                    break;
+                case 'TAIL':
+                    color = '#00cc00';
                     break;
                 default:
                     color = '#000000';

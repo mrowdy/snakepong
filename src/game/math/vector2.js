@@ -16,6 +16,11 @@ define(['app/core'], function(core) {
             return this;
         }
 
+        this.clear = function(x, y){
+            this.x = 0;
+            this.y = 0;
+        }
+
         this.copyTo = function(v) {
             v.x = this.x;
             v.y = this.y;
@@ -67,6 +72,17 @@ define(['app/core'], function(core) {
             } else {
                 this.x *= v;
             }   this.y *= v;
+
+            return this;
+        }
+
+        this.div = function(v){
+            if(typeof v === 'object'){
+                this.x /= v.x;
+                this.y /= v.y;
+            } else {
+                this.x /= v;
+            }   this.y /= v;
 
             return this;
         }
@@ -153,6 +169,14 @@ define(['app/core'], function(core) {
             var len = this.sub(v).len();
             this.add(v);
             return len;
+        }
+
+        this.equals = function(v){
+            return (this.x == v.x && this.y == v.y);
+        }
+
+        this.isZero = function() {
+            return (this.len() < 0.0001 );
         }
 
     }

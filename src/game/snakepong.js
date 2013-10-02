@@ -1,4 +1,4 @@
-define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render2D', 'game/camera'], function(core, Loop, Debug, World, Renderer, Camera) {
+define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render2D', 'game/camera', 'game/input/keyboard-controller'], function(core, Loop, Debug, World, Renderer, Camera, KeyboardController) {
     return function($canvas){
 
         var loop,
@@ -29,6 +29,14 @@ define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render2D', 'g
         var initGame = function(){
             world = new World();
             camera = new Camera(150, 100, 300, 200);
+
+            var  keyboardController = new KeyboardController({
+                87 : function(){ world.inputHandler.inputs.player1Up(); },
+                83 : function(){ world.inputHandler.inputs.player1Down(); },
+                38 : function(){ world.inputHandler.inputs.player2Up(); },
+                40 : function(){ world.inputHandler.inputs.player2Down(); },
+            }, 100);
+
         }
 
         var update = function(deltaTime){
