@@ -6,7 +6,7 @@
   background: #000000;
   left: 0;
   padding: 0;
-  z-index: 99;
+  z-index: 101;
   @include transition(bottom .5s);
 
   &.show {
