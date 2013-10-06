@@ -1,4 +1,6 @@
 define(['app/core', 'game/math/vector2'], function(core, Vector2) {
+    'use strict';
+
     return function(x, y, width, height){
 
         this.size = new Vector2(width, height);
@@ -6,8 +8,8 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
 
         var init = function(){
 
-        }
+        };
 
         init();
-    }
+    };
 });

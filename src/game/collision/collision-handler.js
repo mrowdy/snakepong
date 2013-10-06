@@ -1,43 +1,58 @@
-define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/response'], function(core, Vector2, Sat, Response) {
-    return function(){
+define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/response', 'game/collision/spatial-hash-grid'], function(core, Vector2, Sat, Response, Grid) {
+    'use strict';
+
+    return function(width, height, cellsize){
 
         var items,
             item,
             sat,
-            response;
+            response,
+            grid,
+            potColliders = [],
+            i = 0;
 
         var init = function(){
             sat = new Sat();
+            grid = new Grid(width, height, cellsize, 10);
             response = new Response();
-        }
+        };
 
         this.check = function(itemsToCheck){
             items = itemsToCheck;
-            for(var i = 0; i < items.length; i++){
+            grid.reset();
+            for(i = 0; i < items.length; i++){
                 item = items[i];
-                if(item.TYPE == 'TAIL'){
-                    continue;
-                }
-                checkCollisionOfItem();
-                if(item.static){
-                    continue;
+                if(item.collidable === true){
+                    if(item.static === true){
+                        grid.registerStaticActor(item);
+                    } else {
+                        grid.registerDynamicActor(item);
+                    }
                 }
             }
-        }
+
+            for(i = 0; i < items.length; i++){
+                if(items[i].TYPE === 'BALL'){
+                    item = items[i];
+                    potColliders = grid.getPotentialColliders(items[i]);
+                    checkCollisionOfItem();
+                }
+            }
+        };
 
         var checkCollisionOfItem = function(){
-            for(var i = 0; i < items.length; i++){
-                var item2 = items[i];
+            for(var i = 0; i < potColliders.length; i++){
+                var item2 = potColliders[i];
                 if(item === item2){
                     continue;
                 }
-                if(item2.TYPE == 'TAIL'){
+                if(item2.TYPE === 'TAIL'){
                     continue;
                 }
 
                 checkRectRectCollision(item, item2);
             }
-        }
+        };
 
         var checkRectRectCollision = function(item1, item2){
             var rect1 = item1.bounds;
@@ -48,14 +63,14 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
                 right: rect1.position.x + (rect1.size.x / 2),
                 top: rect1.position.y - (rect1.size.y / 2),
                 bottom: rect1.position.y + (rect1.size.y / 2)
-            }
+            };
 
             var r2 = {
                 left: rect2.position.x - (rect2.size.x / 2),
                 right: rect2.position.x + (rect2.size.x / 2),
                 top: rect2.position.y - (rect2.size.y / 2),
                 bottom: rect2.position.y + (rect2.size.y / 2)
-            }
+            };
 
             if(!(
                 r2.left > r1.right ||
@@ -66,22 +81,21 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
             {
                 resolveIntersection(item1, item2);
             }
-
-        }
+        };
 
         var clamp = function(value, min ,max){
             return Math.min(Math.max(value, min), max);
-        }
+        };
 
         var resolveIntersection = function(item1, item2){
             response.clear();
 
-            intersecting = false;
+            var intersecting = false;
             intersecting = sat.testPolygonPolygon(item1.bounds.toPolygon(), item2.bounds.toPolygon(), response);
 
             if(intersecting){
 
-                if(item1.TYPE == 'TAIL' || item2.TYPE == 'TAIL'){
+                if(item1.TYPE === 'TAIL' || item2.TYPE === 'TAIL'){
                     return;
                 }
 
@@ -97,8 +111,8 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
                     item2.collision(item1);
                 }
             }
-        }
+        };
 
         init();
-    }
+    };
 });

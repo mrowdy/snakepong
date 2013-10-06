@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-
+    'use strict';
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         banner: '/**\n' +
@@ -14,7 +14,7 @@ module.exports = function(grunt) {
             '*/',
 
         requirejs: {
-            compile: {
+            build: {
                 options: {
                     baseUrl: 'src',
                     name: 'main',
@@ -24,7 +24,7 @@ module.exports = function(grunt) {
             }
         },
         usebanner: {
-            compile: {
+            build: {
                 options: {
                     position: 'top',
                     banner: '<%= banner %>'
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
             }
         },
         sass: {
-            compile: {
+            build: {
                 options: {
                     loadPath: 'sass',
                     style: 'compressed',
@@ -47,9 +47,26 @@ module.exports = function(grunt) {
                 }
             }
         },
-        exec: {
-            git_add:{
-                command: 'git add .'
+        jshint: {
+            all: [
+                'Gruntfile.js',
+                'src/**/*.js',
+                'spec/**/*.js'
+            ],
+            options: {
+                jshintrc: '.jshintrc'
+            }
+        },
+        jasmine: {
+            src : 'src/**/*.js',
+            options : {
+                specs : 'spec/**/*.js',
+                template: require('grunt-template-jasmine-requirejs'),
+                templateOptions: {
+                    requireConfig: {
+                        baseUrl: 'src'
+                    }
+                }
             }
         }
     });
@@ -57,6 +74,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-banner');
-    grunt.loadNpmTasks('grunt-exec');
-    grunt.registerTask('default', ['requirejs', 'sass', 'usebanner', 'exec']);
+
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
+
+    grunt.registerTask('default', ['requirejs', 'sass', 'usebanner']);
+    grunt.registerTask('test', ['jshint', 'jasmine']);
 };

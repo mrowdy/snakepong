@@ -1,5 +1,11 @@
 define(['app/core'], function(core) {
+    'use strict';
+
     return function($canvas){
+
+        if($canvas === null){
+            return false;
+        }
 
         var context,
             world,
@@ -7,24 +13,31 @@ define(['app/core'], function(core) {
             scale,
             offsetX = 0,
             offsetY = 0,
-            showBoundingBoxes = false;
+            showBoundingBoxes = false,
+            i,
+            width, height,
+            x, y,
+            s1, s2,
+            radius,
+            color;
+
 
         var init = function(){
             context = $canvas.getContext('2d');
             clear();
-        }
+        };
 
         this.initCanvas = function(){
             scale = false;
-        }
+        };
 
         this.toggleBoundingBoxes = function(){
             showBoundingBoxes = !showBoundingBoxes;
-        }
+        };
 
         this.init = function(){
             init();
-        }
+        };
 
         this.draw = function(objects){
             world = objects.world;
@@ -36,57 +49,56 @@ define(['app/core'], function(core) {
 
             clear();
             renderCamera();
-            for(var i = 0; i < world.items.length; i++){
+            for(i = 0; i < world.items.length; i++){
                 renderItem(world.items[i]);
             }
-        }
+        };
 
         var clear = function(){
             context.clearRect(0, 0, $canvas.width, $canvas.height);
             context.fillStyle = '#000000';
             context.fillRect(0, 0, $canvas.width, $canvas.height);
-        }
+        };
 
         var getScale = function(){
             if(camera){
-                var s1 = $canvas.width / camera.size.x;
-                var s2 = $canvas.height / camera.size.y;
+                s1 = $canvas.width / camera.size.x;
+                s2 = $canvas.height / camera.size.y;
                 scale = s1<s2?s1:s2;
 
                 offsetX = $canvas.width / 2 - ( camera.size.x * scale) / 2;
                 offsetY = $canvas.height / 2 - ( camera.size.y * scale) / 2;
             }
-        }
+        };
 
         var worldToCanvas = function(value){
             return value * scale;
-        }
+        };
 
         var renderCamera = function(){
-            var width = worldToCanvas(camera.size.x, 'x');
-            var height = worldToCanvas(camera.size.y, 'y');
+            width = worldToCanvas(camera.size.x, 'x');
+            height = worldToCanvas(camera.size.y, 'y');
             context.fillStyle = '#ffffff';
             context.fillRect(offsetX, offsetY, width, height);
-        }
+        };
 
         var renderItem = function(item){
             if(!isVisible(item)){
                 return;
             }
-            var posX = worldToCanvas(item.position.x) + offsetX;
-            var posY = worldToCanvas(item.position.y) + offsetY;
-            var width = worldToCanvas(item.size.x);
-            var height = worldToCanvas(item.size.y);
+            x = worldToCanvas(item.position.x) + offsetX;
+            y = worldToCanvas(item.position.y) + offsetY;
+            width = worldToCanvas(item.size.x);
+            height = worldToCanvas(item.size.y);
 
             if(showBoundingBoxes && item.bounds){
                 renderBoundingBox(item.bounds);
             }
 
-            context.translate(posX, $canvas.height - posY);
+            context.translate(x, $canvas.height - y);
             context.fillStyle = getColor(item.TYPE);
 
-            if(item.TYPE == 'BALL' || item.TYPE == 'TAIL' ){
-
+            if(item.TYPE === 'BALL' || item.TYPE === 'TAIL' ){
                 context.beginPath();
                 context.arc(0, 0,  worldToCanvas(item.radius), 0, Math.PI*2, true);
                 context.fill();
@@ -94,9 +106,8 @@ define(['app/core'], function(core) {
             } else {
                 context.fillRect(-width / 2, -height / 2, width, height);
             }
-            context.translate(posX * -1, ($canvas.height - posY) * -1);
-
-        }
+            context.translate(x * -1, ($canvas.height - y) * -1);
+        };
         
         var isVisible = function(item){
             if((item.position.x - item.size.x / 2 > camera.size.x)
@@ -107,10 +118,9 @@ define(['app/core'], function(core) {
                 return false;
             }
             return true;
-        }
+        };
 
         var getColor = function(type){
-            var color;
             switch(type){
                 case 'BALL':
                     color = '#00ff00';
@@ -129,30 +139,28 @@ define(['app/core'], function(core) {
                     break;
             }
             return color;
-        }
+        };
 
         var renderBoundingBox = function(bounds){
             context.beginPath();
             context.lineWidth = 1;
             context.strokeStyle = '#ff0000';
-            var x = worldToCanvas(bounds.position.x) + offsetX;
-            var y = worldToCanvas(bounds.position.y) + offsetY;
+            x = worldToCanvas(bounds.position.x) + offsetX;
+            y = worldToCanvas(bounds.position.y) + offsetY;
 
             switch(bounds.TYPE){
                 case 'RECT':
-                    var width = worldToCanvas(bounds.size.x);
-                    var height = worldToCanvas(bounds.size.y);
+                    width = worldToCanvas(bounds.size.x);
+                    height = worldToCanvas(bounds.size.y);
                     context.rect(x - width / 2, $canvas.height - (y + height / 2), width, height);
                     break;
                 case 'CIRCLE':
-                    var radius = worldToCanvas(bounds.radius / 2);
+                    radius = worldToCanvas(bounds.radius / 2);
                     context.arc(x, $canvas.height - y,  radius, 0, Math.PI*2, true);
                     break;
             }
-
             context.stroke();
-        }
-
+        };
         init();
-    }
+    };
 });

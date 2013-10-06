@@ -1,4 +1,7 @@
 define(function() {
+    'use strict';
+    /*global window */
+
     return function(options) {
 
         var defaultOptions = {
@@ -8,7 +11,7 @@ define(function() {
             renderCallback: false,
             updateCallback: false,
             clock: false
-        }
+        };
 
         var status = '',
             time = 0.0,
@@ -20,10 +23,10 @@ define(function() {
             RUNNING : 0,
             PAUSED : 1,
             STOPPED : 2
-        }
+        };
 
         var init = function(){
-            if (typeof options == 'object') {
+            if (typeof options === 'object') {
                 for (var property in defaultOptions) {
                     if(!options[property]){
                         options[property] = defaultOptions[property];
@@ -38,7 +41,7 @@ define(function() {
             }
 
             status = STATUS.STOPPED;
-        }
+        };
 
         /**
          * Sets updateCallback
@@ -46,21 +49,21 @@ define(function() {
          */
         this.setUpdateCallback = function(newUpdateCallback){
             options.updateCallback = newUpdateCallback;
-        }
+        };
 
         /**
          * Sets Render Callback.
-         * @param newRenderCallback
+         * @param newRendererCallback
          */
         this.setRenderCallback = function(newRendererCallback){
-            options.rendererCallback = newRenderCallback;
-        }
+            options.rendererCallback = newRendererCallback;
+        };
 
         /**
          * Start Game
          */
         this.start = function(callback){
-            if(status == STATUS.STOPPED){
+            if(status === STATUS.STOPPED){
                 currentTime = getCurrentTime();
                 status = STATUS.RUNNING;
                 if(callback){
@@ -68,50 +71,50 @@ define(function() {
                 }
                 loop();
             }
-        }
+        };
 
         /**
          * Pause Game
          */
         this.pause = function(callback){
-            if(status == STATUS.RUNNING){
+            if(status === STATUS.RUNNING){
                 status = STATUS.PAUSED;
                 if(callback){
                     callback();
                 }
             }
-        }
+        };
 
         /**
          * Stop Game
          */
         this.stop = function(callback){
-            if(status != STATUS.STOPPED){
+            if(status !== STATUS.STOPPED){
                 status = STATUS.STOPPED;
                 if(callback){
                     callback();
                 }
             }
-        }
+        };
 
         /**
          * Resume Paused Game
          */
         this.resume = function(callback){
-            if(status == STATUS.PAUSED){
+            if(status === STATUS.PAUSED){
                 status = STATUS.RUNNING;
                 if(callback){
                     callback();
                 }
                 loop();
             }
-        }
+        };
 
         this.setFPSCallback = function(callback){
             if(callback){
                 options.fpsCallback = callback;
             }
-        }
+        };
 
         /**
          * Set new DeltaTime for timesteps
@@ -119,14 +122,14 @@ define(function() {
          */
         this.setDeltaTime = function(newDeltaTime){
             options.deltaTime = newDeltaTime;
-        }
+        };
 
 
         /**
          * The Loop
          */
         var loop = function(){
-            if(status == STATUS.RUNNING){
+            if(status === STATUS.RUNNING){
                 var newTime = getCurrentTime();
                 var frameTime = newTime - currentTime;
 
@@ -155,17 +158,16 @@ define(function() {
                 }
 
                 options.clock(loop);
-
             }
-        }
+        };
 
         /**
          * @returns int current time in milliseconds
          */
         var getCurrentTime = function(){
-            date = new Date();
+            var date = new Date();
             return date.getTime();
-        }
+        };
 
 
         /**
@@ -182,8 +184,8 @@ define(function() {
             } else {
                 window.setTimeout(callback, 1000 / 60);
             }
-        }
+        };
         init();
 
-    }
+    };
 });

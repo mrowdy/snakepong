@@ -41,9 +41,9 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
 
             a2b.mul(fr);
 
-            //if (!actor1.static) {
+            if (!actor1.static) {
                 //actor1.addForce(a2b);
-            //}
+            }
             if (!this.actor2.static) {
                 this.actor2.addForce(a2b.reverse());
             }

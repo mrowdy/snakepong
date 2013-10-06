@@ -1,4 +1,5 @@
 define(function() {
+    'use strict';
 
     return {
         error: function($msg){
@@ -12,6 +13,6 @@ define(function() {
         info: function($msg){
             console.log($msg);
         }
-    }
+    };
 
 });

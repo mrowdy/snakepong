@@ -1,4 +1,5 @@
 define(function() {
+    'use strict';
     return {
         add: function($el, className){
             $el.classList.add(className);
@@ -15,6 +16,6 @@ define(function() {
         contains: function($el, className){
             return $el.classList.contains(className);
         }
-    }
+    };
 
 });

@@ -1,5 +1,10 @@
 define(['app/core'], function(core) {
+    'use strict';
+
     return function KeyboardController(keys, repeat) {
+        /*global window */
+        /*global document */
+
         var timers= {};
 
         document.onkeydown= function(event) {
@@ -10,8 +15,9 @@ define(['app/core'], function(core) {
             if (!(key in timers)) {
                 timers[key] = null;
                 keys[key]();
-                if (repeat !== 0)
+                if (repeat !== 0){
                     timers[key]= setInterval(keys[key], repeat);
+                }
             }
             return false;
         };
@@ -27,7 +33,7 @@ define(['app/core'], function(core) {
         };
 
         window.onblur= function() {
-            for (key in timers){
+            for (var key in timers){
                 if (timers[key] !== null){
                     clearInterval(timers[key]);
                 }

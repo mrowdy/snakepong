@@ -1,4 +1,6 @@
 define(['app/core', 'game/math/vector2'], function(core, Vector2) {
+    'use strict';
+
     return function(){
 
         this.a = null;
@@ -15,5 +17,5 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
             this.overlap = Number.MAX_VALUE;
             return this;
         };
-    }
+    };
 });

@@ -1,4 +1,6 @@
 define(['app/core', 'game/math/vector2'], function(core, Vector2) {
+    'use strict';
+
     return function(){
 
         var T_VECTORS = [];
@@ -13,10 +15,10 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
                 T_VECTORS.push(new Vector2());
             }
 
-            for (var i = 0; i < 5; i++) {
+            for (i = 0; i < 5; i++) {
                 T_ARRAYS.push([]);
             }
-        }
+        };
 
         var flattenPointsOn = function(points, normal, result) {
             var min = Number.MAX_VALUE;
@@ -43,6 +45,8 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
             rangeB[0] += projectedOffset;
             rangeB[1] += projectedOffset;
 
+            var option1 = false;
+            var option2 = false;
 
             if (rangeA[0] > rangeB[1] || rangeB[0] > rangeA[1]) {
                 T_VECTORS.push(offsetV);
@@ -59,8 +63,8 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
                         overlap = rangeA[1] - rangeB[0];
                         response.bInA = false;
                     } else {
-                        var option1 = rangeA[1] - rangeB[0];
-                        var option2 = rangeB[1] - rangeA[0];
+                        option1 = rangeA[1] - rangeB[0];
+                        option2 = rangeB[1] - rangeA[0];
                         overlap = option1 < option2 ? option1 : -option2;
                     }
                 } else {
@@ -69,8 +73,8 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
                         overlap = rangeA[0] - rangeB[1];
                         response.aInB = false;
                     } else {
-                        var option1 = rangeA[1] - rangeB[0];
-                        var option2 = rangeB[1] - rangeA[0];
+                        option1 = rangeA[1] - rangeB[0];
+                        option2 = rangeB[1] - rangeA[0];
                         overlap = option1 < option2 ? option1 : -option2;
                     }
                 }
@@ -113,7 +117,7 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
                 }
             }
 
-            for (var i = 0;i < bLen; i++) {
+            for (i = 0;i < bLen; i++) {
                 if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, b.normals[i], response)) {
                     return false;
                 }
@@ -128,5 +132,5 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
         };
 
         init();
-    }
+    };
 });

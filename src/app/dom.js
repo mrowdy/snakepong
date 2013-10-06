@@ -1,4 +1,7 @@
 define(function() {
+    'use strict';
+    /* global document */
+
     return {
        el: function(selector, $el){
            if($el){
@@ -16,6 +19,6 @@ define(function() {
                return document.querySelectorAll(selector);
            }
        }
-    }
+    };
 
 });

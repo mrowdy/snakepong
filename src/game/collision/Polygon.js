@@ -1,4 +1,6 @@
 define(['app/core', 'game/math/vector2'], function(core, Vector2) {
+    'use strict';
+
     return function(x, y, points){
 
         this.TYPE = 'POLYGON';
@@ -15,8 +17,8 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
                 this.points = points;
             }
 
-            calc();
-        }
+            this.calc();
+        };
 
         this.calc = function(){
 
@@ -32,8 +34,8 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
                 this.edges.push(e);
                 this.normals.push(n);
             }
-        }
+        };
 
         this.calc();
-    }
+    };
 });
