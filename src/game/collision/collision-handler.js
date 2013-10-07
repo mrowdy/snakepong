@@ -1,4 +1,4 @@
-define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/response', 'game/collision/spatial-hash-grid'], function(core, Vector2, Sat, Response, Grid) {
+define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/response', 'game/collision/rectangle-collision', 'game/collision/spatial-hash-grid'], function(core, Vector2, Sat, Response, RectangleCollision, Grid) {
     'use strict';
 
     return function(width, height, cellsize){
@@ -6,6 +6,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
         var items,
             item,
             sat,
+            rectangleCollision,
             response,
             grid,
             potColliders = [],
@@ -14,6 +15,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
         var init = function(){
             sat = new Sat();
             grid = new Grid(width, height, cellsize, 10);
+            rectangleCollision = new RectangleCollision();
             response = new Response();
         };
 
@@ -35,51 +37,20 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
                 if(items[i].TYPE === 'BALL'){
                     item = items[i];
                     potColliders = grid.getPotentialColliders(items[i]);
-                    checkCollisionOfItem();
+                    checkAgainstPotentialColliders();
                 }
             }
         };
 
-        var checkCollisionOfItem = function(){
+        var checkAgainstPotentialColliders = function(){
             for(var i = 0; i < potColliders.length; i++){
                 var item2 = potColliders[i];
                 if(item === item2){
                     continue;
                 }
-                if(item2.TYPE === 'TAIL'){
-                    continue;
+                if(rectangleCollision.check(item.bounds, item2.bounds)){
+                    resolveIntersection(item, item2);
                 }
-
-                checkRectRectCollision(item, item2);
-            }
-        };
-
-        var checkRectRectCollision = function(item1, item2){
-            var rect1 = item1.bounds;
-            var rect2 = item2.bounds;
-
-            var r1 = {
-                left: rect1.position.x - (rect1.size.x / 2),
-                right: rect1.position.x + (rect1.size.x / 2),
-                top: rect1.position.y - (rect1.size.y / 2),
-                bottom: rect1.position.y + (rect1.size.y / 2)
-            };
-
-            var r2 = {
-                left: rect2.position.x - (rect2.size.x / 2),
-                right: rect2.position.x + (rect2.size.x / 2),
-                top: rect2.position.y - (rect2.size.y / 2),
-                bottom: rect2.position.y + (rect2.size.y / 2)
-            };
-
-            if(!(
-                r2.left > r1.right ||
-                r2.right < r1.left ||
-                r2.top > r1.bottom ||
-                r2.bottom < r1.top
-                ))
-            {
-                resolveIntersection(item1, item2);
             }
         };
 
@@ -94,11 +65,6 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
             intersecting = sat.testPolygonPolygon(item1.bounds.toPolygon(), item2.bounds.toPolygon(), response);
 
             if(intersecting){
-
-                if(item1.TYPE === 'TAIL' || item2.TYPE === 'TAIL'){
-                    return;
-                }
-
                 if(!item2.noCollision){
                     item1.position.sub(response.overlapV);
                     item1.velocity.reflect(response.overlapN.perp());
