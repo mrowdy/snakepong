@@ -18,8 +18,18 @@
     width: 40px;
     height: 40px;
     position: absolute;
+    margin: 2px;
     bottom: 2px;
     right: 2px;
+    background-color: #000000;
+    background-image: url(../images/layout/big.png);
+    border: none;
+
+    &:hover {
+      @include scale(1);
+      @include box-shadow(none);
+      border: none;
+    }
   }
 
   &.fullscreen {
@@ -32,6 +42,11 @@
     margin: 0;
     padding: 0;
     z-index: 100;
+
+    .toggleFullscreen {
+      background-image: url(../images/layout/small.png);
+    }
+
   }
 }
 
