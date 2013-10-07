@@ -49,6 +49,10 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
                 //this.speed *= 1.1;
                 //other.velocity.mul(1.1);
             }
+
+            if(other.TYPE === 'WALL'){
+                this.velocity.reset(0, 0)
+            }
         };
     };
 });
