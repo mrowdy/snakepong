@@ -90,15 +90,18 @@ define(
 
                var last = ball;
 
-               for(i = 100; i > 0; i--){
-                   var tail = new Ball(this.size.x / 2, this.size.y / 2, i / 50);
+               for(i = 200; i > 0; i--){
+                   var tail = new Ball(this.size.x / 2, this.size.y / 2, i / 100);
                    tail.TYPE = 'TAIL';
                    tail.friction = 0.06;
                    tail.collidable = false;
+                   tail.semiStatic = true;
                    last.addChild(tail);
                    last = tail;
                    this.items.push(tail);
                }
+
+                collisionHandler.initStatic(this.items);
 
             };
 

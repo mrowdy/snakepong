@@ -4,20 +4,21 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
     return function(x, y, width, height){
 
         this.TYPE = 'PLAYER';
+
         this.size = new Vector2(width, height);
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
+
         this.speed = 2;
         this.friction = 0.002;
         this.affectedByGravity = false;
-        this.static = false;
-        this.ballTouches = 0;
-        this.initX = x;
 
         this.collidable = true;
         this.static = false;
-
         this.bounds = new Rectangle(x, y, width, height);
+
+        this.ballTouches = 0;
+        this.initX = x;
 
         var acceleration = new Vector2();
 

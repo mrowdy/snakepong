@@ -10,25 +10,21 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
         var M_VORONOI_REGION =  0;
         var R_VORONOI_REGION =  1;
 
-        var i = 0,
+        var i,
             min = 0,
             max = 0,
             len = 0,
-            len2= 0,
+            len2 = 0,
             dot = 0,
-            dp = 0,
             rangeA,
             rangeB,
             offsetV,
             projectedOffset,
-            option1, option2,
-            overlap = 0,
+            option1,
+            option2,
+            overlap,
             absOverlap,
-            aPoints,
-            bPoints,
-            aLen,
-            bLen;
-
+            dp;
 
         var init = function(){
             for (i = 0; i < 10; i++) {
@@ -76,7 +72,7 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
             }
 
             if (response) {
-                overlap = 0;
+               overlap = 0;
                 if (rangeA[0] < rangeB[0]) {
                     response.aInB = false;
                     if (rangeA[1] < rangeB[1]) {
@@ -127,11 +123,11 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
         };
 
         this.testPolygonPolygon = function(a, b, response) {
-            aPoints = a.points;
-            aLen = aPoints.length;
-            bPoints = b.points;
-            bLen = bPoints.length;
-            for (i = 0; i < aLen; i++) {
+            var aPoints = a.points;
+            var aLen = aPoints.length;
+            var bPoints = b.points;
+            var bLen = bPoints.length;
+            for (var i = 0; i < aLen; i++) {
                 if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, a.normals[i], response)) {
                     return false;
                 }

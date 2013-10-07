@@ -5,12 +5,14 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
 
         var items,
             item,
+            item2,
             sat,
             rectangleCollision,
             response,
             grid,
             potColliders = [],
-            i = 0;
+            i = 0, y = 0,
+            intersecting;
 
         var init = function(){
             sat = new Sat();
@@ -19,22 +21,33 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
             response = new Response();
         };
 
-        this.check = function(itemsToCheck){
+        this.initStatic = function(itemsToCheck){
+            grid.clearStatic();
             items = itemsToCheck;
-            grid.reset();
             for(i = 0; i < items.length; i++){
                 item = items[i];
                 if(item.collidable === true){
                     if(item.static === true){
                         grid.registerStaticActor(item);
-                    } else {
+                    }
+                }
+            }
+        };
+
+        this.check = function(itemsToCheck){
+            grid.clearDynamic();
+            items = itemsToCheck;
+            for(i = 0; i < items.length; i++){
+                item = items[i];
+                if(item.collidable === true){
+                    if(item.static === false){
                         grid.registerDynamicActor(item);
                     }
                 }
             }
 
             for(i = 0; i < items.length; i++){
-                if(items[i].TYPE === 'BALL'){
+                if(items[i].static === false){
                     item = items[i];
                     potColliders = grid.getPotentialColliders(items[i]);
                     checkAgainstPotentialColliders();
@@ -43,9 +56,9 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
         };
 
         var checkAgainstPotentialColliders = function(){
-            for(var i = 0; i < potColliders.length; i++){
-                var item2 = potColliders[i];
-                if(item === item2){
+            for(y = 0; y < potColliders.length; y++){
+                item2 = potColliders[y];
+                if(item.semiStatic === true){
                     continue;
                 }
                 if(rectangleCollision.check(item.bounds, item2.bounds)){
@@ -54,18 +67,12 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
             }
         };
 
-        var clamp = function(value, min ,max){
-            return Math.min(Math.max(value, min), max);
-        };
-
         var resolveIntersection = function(item1, item2){
             response.clear();
-
-            var intersecting = false;
             intersecting = sat.testPolygonPolygon(item1.bounds.toPolygon(), item2.bounds.toPolygon(), response);
-
             if(intersecting){
-                if(!item2.noCollision){
+
+                if(item2.collidable){
                     item1.position.sub(response.overlapV);
                     item1.velocity.reflect(response.overlapN.perp());
                 }
@@ -78,7 +85,6 @@ define(['app/core', 'game/math/vector2', 'game/collision/sat', 'game/collision/r
                 }
             }
         };
-
         init();
     };
 });

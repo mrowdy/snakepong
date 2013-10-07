@@ -32,6 +32,18 @@ define(['game/math/vector2', 'game/collision/cell'], function(Vector2, Cell) {
             this.static[i] = new Cell();
         }
 
+        this.clearDynamic = function(){
+            for(i = 0; i < this.numCells; i++){
+                this.dynamic[i].clear();
+            }
+        };
+
+        this.clearStatic = function(){
+            for(i = 0; i < this.numCells; i++){
+                this.static[i].clear();
+            }
+        };
+
         this.reset = function(){
             for(i = 0; i < this.numCells; i++){
                 this.dynamic[i].clear();
@@ -42,7 +54,6 @@ define(['game/math/vector2', 'game/collision/cell'], function(Vector2, Cell) {
         this.registerDynamicActor = function(actor){
             this.getCellIds(actor);
             i = 0;
-            cellId = -1;
             while(i <= 3 && (cellId = this._CELL_IDS[i++]) !== -1){
                 this.dynamic[cellId].add(actor);
             }
@@ -51,7 +62,6 @@ define(['game/math/vector2', 'game/collision/cell'], function(Vector2, Cell) {
         this.registerStaticActor = function(actor){
             this.getCellIds(actor);
             i = 0;
-            cellId = -1;
             while(i <= 3 && (cellId = this._CELL_IDS[i++]) !== -1){
                 this.static[cellId].add(actor);
             }
@@ -60,7 +70,6 @@ define(['game/math/vector2', 'game/collision/cell'], function(Vector2, Cell) {
         this.unregistActor = function(actor){
             this.getCellIds(actor);
             i = 0;
-            cellId = -1;
             while(i <= 3 && (cellId = this._CELL_IDS[i++]) !== -1){
                 this.dynamic[cellId].remove(actor);
                 this.static[cellId].remove(actor);
@@ -145,7 +154,6 @@ define(['game/math/vector2', 'game/collision/cell'], function(Vector2, Cell) {
             this._FOUND_OBJECTS = [];
             this.getCellIds(actor);
             i = 0;
-            cellId = -1;
             while(i <= 3 && (cellId = this._CELL_IDS[i++]) !== -1){
                 len = this.dynamic[cellId].size();
                 for(j = 0; j < len; j++){
