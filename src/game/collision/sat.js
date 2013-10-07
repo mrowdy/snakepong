@@ -10,8 +10,28 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
         var M_VORONOI_REGION =  0;
         var R_VORONOI_REGION =  1;
 
+        var i = 0,
+            min = 0,
+            max = 0,
+            len = 0,
+            len2= 0,
+            dot = 0,
+            dp = 0,
+            rangeA,
+            rangeB,
+            offsetV,
+            projectedOffset,
+            option1, option2,
+            overlap = 0,
+            absOverlap,
+            aPoints,
+            bPoints,
+            aLen,
+            bLen;
+
+
         var init = function(){
-            for (var i = 0; i < 10; i++) {
+            for (i = 0; i < 10; i++) {
                 T_VECTORS.push(new Vector2());
             }
 
@@ -21,11 +41,11 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
         };
 
         var flattenPointsOn = function(points, normal, result) {
-            var min = Number.MAX_VALUE;
-            var max = -Number.MAX_VALUE;
-            var len = points.length;
-            for (var i = 0; i < len; i++ ) {
-                var dot = points[i].dot(normal);
+            min = Number.MAX_VALUE;
+            max = -Number.MAX_VALUE;
+            len = points.length;
+            for (i = 0; i < len; i++ ) {
+                dot = points[i].dot(normal);
                 if (dot < min) { min = dot; }
                 if (dot > max) { max = dot; }
             }
@@ -33,11 +53,11 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
         };
 
         var isSeparatingAxis = function(aPos, bPos, aPoints, bPoints, axis, response) {
-            var rangeA = T_ARRAYS.pop();
-            var rangeB = T_ARRAYS.pop();
+            rangeA = T_ARRAYS.pop();
+            rangeB = T_ARRAYS.pop();
 
-            var offsetV = T_VECTORS.pop().copyFrom(bPos).sub(aPos);
-            var projectedOffset = offsetV.dot(axis);
+            offsetV = T_VECTORS.pop().copyFrom(bPos).sub(aPos);
+            projectedOffset = offsetV.dot(axis);
 
             flattenPointsOn(aPoints, axis, rangeA);
             flattenPointsOn(bPoints, axis, rangeB);
@@ -45,8 +65,8 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
             rangeB[0] += projectedOffset;
             rangeB[1] += projectedOffset;
 
-            var option1 = false;
-            var option2 = false;
+            option1 = false;
+            option2 = false;
 
             if (rangeA[0] > rangeB[1] || rangeB[0] > rangeA[1]) {
                 T_VECTORS.push(offsetV);
@@ -56,7 +76,7 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
             }
 
             if (response) {
-                var overlap = 0;
+                overlap = 0;
                 if (rangeA[0] < rangeB[0]) {
                     response.aInB = false;
                     if (rangeA[1] < rangeB[1]) {
@@ -79,7 +99,7 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
                     }
                 }
 
-                var absOverlap = Math.abs(overlap);
+                absOverlap = Math.abs(overlap);
                 if (absOverlap < response.overlap) {
                     response.overlap = absOverlap;
                     response.overlapN.copyFrom(axis);
@@ -95,8 +115,8 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
         };
 
         var voronoiRegion = function(line, point) {
-            var len2 = line.len2();
-            var dp = point.dot(line);
+            len2 = line.len2();
+            dp = point.dot(line);
             if (dp < 0) {
                 return L_VORONOI_REGION;
             } else if (dp > len2) {
@@ -107,11 +127,11 @@ define(['app/core', 'game/math/vector2'], function(core, Vector2) {
         };
 
         this.testPolygonPolygon = function(a, b, response) {
-            var aPoints = a.points;
-            var aLen = aPoints.length;
-            var bPoints = b.points;
-            var bLen = bPoints.length;
-            for (var i = 0; i < aLen; i++) {
+            aPoints = a.points;
+            aLen = aPoints.length;
+            bPoints = b.points;
+            bLen = bPoints.length;
+            for (i = 0; i < aLen; i++) {
                 if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, a.normals[i], response)) {
                     return false;
                 }
