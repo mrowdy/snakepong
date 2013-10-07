@@ -13,10 +13,11 @@ define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render2D', 'g
             ball,
             renderer,
             camera,
-            debug;
-
-        var $debug = core.dom.el('#debug');
-        var $fps = core.dom.el('.fps', $debug);
+            debug,
+            $debug = core.dom.el('#debug'),
+            $fps = core.dom.el('.fps', $debug),
+            fps = 60,
+            fpsGrowth = 0.3;
 
         var init = function(){
             renderer = new Renderer($canvas);
@@ -105,6 +106,7 @@ define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render2D', 'g
 
             debug = new Debug(core.dom.el('#debugFps', $debug));
         };
+
         init();
     };
 });

@@ -2,13 +2,14 @@ define(
     [
         'app/core',
         'game/math/vector2',
-        'game/item/ball',
+        'game/item/snake',
         'game/item/player',
         'game/item/wall',
+        'game/item/food',
         'game/collision/collision-handler',
         'game/input/input-handler'
     ],
-    function(core, Vector2, Ball, Player, Wall, CollisionHandler, InputHandler) {
+    function(core, Vector2, Snake, Player, Wall, Food, CollisionHandler, InputHandler) {
         'use strict';
 
         return function(){
@@ -24,9 +25,10 @@ define(
             this.items = [];
 
             var instance = this,
-                ball,
+                snake,
                 player1,
-                player2;
+                player2,
+                index;
 
             var collisionHandler;
             this.inputHandler = new InputHandler({
@@ -40,16 +42,45 @@ define(
                 item,
                 i;
 
+            var last;
+            var addTail = function(length){
+                for(i = length; i > 0; i--){
+                    var tail = new Snake(last.position.x, last.position.y, last.radius * 0.95);
+                    tail.TYPE = 'TAIL';
+                    tail.friction = 0.06;
+                    tail.collidable = false;
+                    tail.semiStatic = true;
+                    last.addChild(tail);
+                    last = tail;
+                    instance.items.push(tail);
+                }
+            }
+
+            var addFood = function(){
+                for(i = 0; i < 5; i++){
+                    var food = new Food(Math.random() * instance.size.x, Math.random() * instance.size.y, 3);
+                    instance.items.push(food);
+                }
+            }
+
+            var replaceFood = function(item){
+                item.position.x = Math.random() * instance.size.x;
+                item.position.y = Math.random() * instance.size.y;
+            }
+
             this.initWorld = function(){
 
                 collisionHandler = new CollisionHandler(this.size.x, this.size.y, this.cellSize);
 
                 this.items = [];
-                ball = new Ball(this.size.x / 2, this.size.y / 2, 2);
+                snake = new Snake(this.size.x / 2, this.size.y / 2, 2);
+                last = snake;
+                addTail(10);
+
                 player1 = new Player(5, this.size.y / 2, 3, 40);
                 player2 = new Player(this.size.x - 5, this.size.y / 2, 3, 40);
 
-                this.initBall();
+                this.initSnake();
 
                 var size;
                 var wall;
@@ -84,35 +115,29 @@ define(
                     this.items.push(wall);
                 }
 
-               this.items.push(ball);
-               this.items.push(player1);
-               this.items.push(player2);
+                this.items.push(snake);
+                this.items.push(player1);
+                this.items.push(player2);
 
-               var last = ball;
-
-               for(i = 200; i > 0; i--){
-                   var tail = new Ball(this.size.x / 2, this.size.y / 2, i / 100);
-                   tail.TYPE = 'TAIL';
-                   tail.friction = 0.06;
-                   tail.collidable = false;
-                   tail.semiStatic = true;
-                   last.addChild(tail);
-                   last = tail;
-                   this.items.push(tail);
-               }
-
+                addFood();
                 collisionHandler.initStatic(this.items);
 
             };
 
-            this.initBall = function(){
-                ball.position = new Vector2(this.size.x / 2, this.size.y / 2);
-                ball.velocity = new Vector2(15,6);
+            this.initSnake = function(){
+                snake.position = new Vector2(this.size.x / 2, this.size.y / 2);
+                snake.velocity = new Vector2(15,6);
+                snake.collision = function(other){
+                    if(other.TYPE == 'FOOD'){
+                        replaceFood(other);
+                        addTail(5);
+                    }
+                }
             };
 
             this.initPlayer = function(){
-                player1.speed = 2;
-                player2.speed = 2;
+                player1.speed = 3;
+                player2.speed = 3;
             };
 
             this.initWorld();
@@ -139,8 +164,8 @@ define(
                 }
             };
 
-            var ballHitsEnd = function(other){
-                if(other.TYPE = 'BALL'){
+            var snakeHitsEnd = function(other){
+                if(other.TYPE = 'SNAKE'){
                     instance.round++;
                     instance.roundOver = true;
                 }
@@ -148,8 +173,13 @@ define(
 
             var newRound = function(){
                 instance.roundOver = false;
-                instance.initBall();
+                instance.initSnake();
                 instance.initPlayer();
             };
+
+            var removeItem = function(item){
+                index = instance.items.indexOf(item);
+                instance.items.splice(index, 1);
+            }
         };
 });

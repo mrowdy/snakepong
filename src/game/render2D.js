@@ -98,7 +98,7 @@ define(['app/core'], function(core) {
             context.translate(x, $canvas.height - y);
             context.fillStyle = getColor(item.TYPE);
 
-            if(item.TYPE === 'BALL' || item.TYPE === 'TAIL' ){
+            if(item.TYPE === 'SNAKE' || item.TYPE === 'TAIL' || item.TYPE == 'FOOD' ){
                 context.beginPath();
                 context.arc(0, 0,  worldToCanvas(item.radius), 0, Math.PI*2, true);
                 context.fill();
@@ -122,7 +122,7 @@ define(['app/core'], function(core) {
 
         var getColor = function(type){
             switch(type){
-                case 'BALL':
+                case 'SNAKE':
                     color = '#00ff00';
                     break;
                 case 'PLAYER':
@@ -133,6 +133,9 @@ define(['app/core'], function(core) {
                     break;
                 case 'TAIL':
                     color = '#00cc00';
+                    break;
+                case 'FOOD':
+                    color = '#ff0000';
                     break;
                 default:
                     color = '#000000';

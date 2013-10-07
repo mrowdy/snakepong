@@ -9,7 +9,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
 
-        this.speed = 2;
+        this.speed = 1;
         this.friction = 0.002;
         this.affectedByGravity = false;
 
@@ -44,7 +44,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
         };
 
         this.collision = function(other){
-            if(other.TYPE === 'BALL'){
+            if(other.TYPE === 'SNAKE'){
                 this.ballTouches++;
                 //this.speed *= 1.1;
                 //other.velocity.mul(1.1);
