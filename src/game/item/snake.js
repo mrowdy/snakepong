@@ -10,7 +10,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
 
-        this.speed = 1;
+        this.speed = 3;
         this.friction = 0.000;
         this.affectedByGravity = true;
 
@@ -25,11 +25,17 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
             i;
 
         this.update = function(deltaTime){
+            if(this.TYPE == 'SNAKE'){
+                this.velocity.nor().mul(this.speed);
+            }
+
+            this.correctDirection();
             acceleration = acceleration.copyFrom(this.velocity);
             acceleration.mul(this.speed * deltaTime);
             for(i = 0; i < this.springs.length; i++){
                 this.springs[i].update();
             }
+
             this.position.add(acceleration);
             this.bounds.set(this.position);
             this.velocity.mul( 1 - this.friction);
@@ -38,6 +44,18 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
         this.addForce = function(v){
             this.velocity.add(v);
         };
+
+        this.correctDirection = function(){
+            if(this.TYPE == 'SNAKE'){
+                if(Math.abs(this.velocity.x / this.velocity.y) < 1){
+                    if(this.velocity.x >= 0){
+                        this.velocity.x += 0.1;
+                    } else {
+                        this.velocity.x -= 0.1;
+                    }
+                }
+            }
+        }
 
         this.addChild = function(child){
             this.childs.push(child);

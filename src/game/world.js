@@ -45,7 +45,7 @@ define(
             var last;
             var addTail = function(length){
                 for(i = length; i > 0; i--){
-                    var tail = new Snake(last.position.x, last.position.y, last.radius * 0.95);
+                    var tail = new Snake(last.position.x, last.position.y + 1, last.radius * 0.99);
                     tail.TYPE = 'TAIL';
                     tail.friction = 0.06;
                     tail.collidable = false;
@@ -58,14 +58,18 @@ define(
 
             var addFood = function(){
                 for(i = 0; i < 5; i++){
-                    var food = new Food(Math.random() * instance.size.x, Math.random() * instance.size.y, 3);
+                    var food = new Food(
+                        Math.random() * (instance.size.x  - 40) + 20,
+                        Math.random() * (instance.size.y - 40) + 20,
+                        3
+                    );
                     instance.items.push(food);
                 }
             }
 
             var replaceFood = function(item){
-                item.position.x = Math.random() * instance.size.x;
-                item.position.y = Math.random() * instance.size.y;
+                item.position.x = Math.random() * (instance.size.x  - 40) + 20;
+                item.position.y = Math.random() * (instance.size.y  - 40) + 20;
             }
 
             this.initWorld = function(){
@@ -126,7 +130,7 @@ define(
 
             this.initSnake = function(){
                 snake.position = new Vector2(this.size.x / 2, this.size.y / 2);
-                snake.velocity = new Vector2(15,6);
+                snake.velocity = new Vector2(5, 0);
                 snake.collision = function(other){
                     if(other.TYPE == 'FOOD'){
                         replaceFood(other);
@@ -136,8 +140,8 @@ define(
             };
 
             this.initPlayer = function(){
-                player1.speed = 3;
-                player2.speed = 3;
+                player1.speed = 2;
+                player2.speed = 2;
             };
 
             this.initWorld();

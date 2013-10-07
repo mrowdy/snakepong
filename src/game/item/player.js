@@ -46,6 +46,9 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
         this.collision = function(other){
             if(other.TYPE === 'SNAKE'){
                 this.ballTouches++;
+
+                var diff =  other.position.y - this.position.y;
+                other.velocity.y = diff;
                 //this.speed *= 1.1;
                 //other.velocity.mul(1.1);
             }
