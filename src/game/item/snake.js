@@ -17,6 +17,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
         this.collidable = true;
         this.static = false;
         this.bounds = new Rectangle(x, y, radius*2, radius*2);
+        this.lastPlayerTouched;
 
         this.childs = [];
         this.springs = [];

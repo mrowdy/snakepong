@@ -17,6 +17,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
         this.collidable = false;
         this.static = false;
         this.bounds = new Rectangle(x, y, radius*2, radius*2);
+        this.points = 5;
 
         var acceleration = new Vector2();
 

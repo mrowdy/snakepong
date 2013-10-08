@@ -24,6 +24,24 @@ define(
 
             this.items = [];
 
+            this.stats = {
+                player1: {
+                    points: 0,
+                    position: {
+                        x: 5,
+                        y: 10
+                    }
+                },
+
+                player2: {
+                    points: 0,
+                    position: {
+                        x: 295,
+                        y: 10
+                    }
+                }
+            };
+
             var instance = this,
                 snake,
                 player1,
@@ -130,11 +148,18 @@ define(
 
             this.initSnake = function(){
                 snake.position = new Vector2(this.size.x / 2, this.size.y / 2);
-                snake.velocity = new Vector2(5, 0);
+                snake.velocity = new Vector2(2, 0);
                 snake.collision = function(other){
                     if(other.TYPE == 'FOOD'){
                         replaceFood(other);
-                        addTail(5);
+                        addTail(other.points);
+                        if(snake.lastPlayerTouched === player1){
+                            instance.stats.player1.points += other.points;
+                        } else {
+                            instance.stats.player2.points += other.points;
+                        }
+                    } else if(other.TYPE == 'PLAYER'){
+                        snake.lastPlayerTouched = other;
                     }
                 }
             };

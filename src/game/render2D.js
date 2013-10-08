@@ -11,6 +11,7 @@ define(['app/core'], function(core) {
             world,
             camera,
             scale,
+            fontSize = '20px',
             offsetX = 0,
             offsetY = 0,
             showBoundingBoxes = false,
@@ -52,6 +53,7 @@ define(['app/core'], function(core) {
             for(i = 0; i < world.items.length; i++){
                 renderItem(world.items[i]);
             }
+            renderGui();
         };
 
         var clear = function(){
@@ -108,6 +110,28 @@ define(['app/core'], function(core) {
             }
             context.translate(x * -1, ($canvas.height - y) * -1);
         };
+
+        var renderGui = function(){
+            context.fillStyle = '#00ff00';
+            context.font = fontSize + " sans-serif";
+
+            context.fillText(
+                world.stats.player1.points,
+                worldToCanvas(world.stats.player1.position.x) + offsetX,
+                worldToCanvas(world.stats.player1.position.y) + offsetY
+            );
+
+            context.fillText(
+                world.stats.player2.points,
+                worldToCanvas(world.stats.player2.position.x) + offsetX - context.measureText(world.stats.player2.points).width,
+                worldToCanvas(world.stats.player2.position.y) + offsetY
+            );
+
+            context.fillStyle = '#000000';
+            context.fillRect(0, 0, ($canvas.width - worldToCanvas(world.size.x)) / 2, $canvas.height);
+            context.fillRect($canvas.width, 0, -($canvas.width - worldToCanvas(world.size.x)) / 2, $canvas.height);
+
+        }
         
         var isVisible = function(item){
             if((item.position.x - item.size.x / 2 > camera.size.x)
