@@ -1,4 +1,4 @@
-define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render2D', 'game/camera', 'game/input/keyboard-controller'], function(core, Loop, Debug, World, Renderer, Camera, KeyboardController) {
+define(['app/core', 'game/loop', 'game/debug', 'game/world', 'game/render/render3D', 'game/camera', 'game/input/keyboard-controller'], function(core, Loop, Debug, World, Renderer, Camera, KeyboardController) {
     'use strict';
 
     return function($canvas){

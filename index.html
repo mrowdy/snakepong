@@ -8,6 +8,33 @@
     <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <script id="shader-fs" type="x-shader/x-fragment">
+        precision mediump float;
+        varying vec4 v_Color;
+
+        void main() {
+            gl_FragColor = v_Color;
+        }
+    </script>
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec4 a_Position;
+        attribute vec4 a_Color;
+
+        uniform vec4 u_Resolution;
+        uniform mat4 u_xFormMatrix;
+
+        varying vec4 v_Color;
+
+        void main() {
+
+            vec4 zeroToOne = a_Position / u_Resolution;
+            vec4 zeroToTwo = zeroToOne * 2.0;
+            vec4 clipSpace = zeroToTwo - 1.0;
+
+            gl_Position =  clipSpace * u_xFormMatrix;
+            v_Color = a_Color;
+        }
+    </script>
 </head>
 <body>
 
