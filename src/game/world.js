@@ -63,16 +63,16 @@ define(
             var last;
             var addTail = function(length){
                 for(i = length; i > 0; i--){
-                    var tail = new Snake(last.position.x, last.position.y + 1, last.radius * 0.99);
+                    var tail = new Snake(last.position.x, last.position.y + 1, last.radius * 0.95);
                     tail.TYPE = 'TAIL';
-                    tail.friction = 0.06;
+                    tail.friction = 0.07;
                     tail.collidable = false;
                     tail.semiStatic = true;
                     last.addChild(tail);
                     last = tail;
                     instance.items.push(tail);
                 }
-            }
+            };
 
             var addFood = function(){
                 for(i = 0; i < 5; i++){
@@ -83,19 +83,19 @@ define(
                     );
                     instance.items.push(food);
                 }
-            }
+            };
 
             var replaceFood = function(item){
                 item.position.x = Math.random() * (instance.size.x  - 40) + 20;
                 item.position.y = Math.random() * (instance.size.y  - 40) + 20;
-            }
+            };
 
             this.initWorld = function(){
 
                 collisionHandler = new CollisionHandler(this.size.x, this.size.y, this.cellSize);
 
                 this.items = [];
-                snake = new Snake(this.size.x / 2, this.size.y / 2, 2);
+                snake = new Snake(this.size.x / 2, this.size.y / 2, 3);
                 last = snake;
                 addTail(10);
 
@@ -150,7 +150,7 @@ define(
                 snake.position = new Vector2(this.size.x / 2, this.size.y / 2);
                 snake.velocity = new Vector2(2, 0);
                 snake.collision = function(other){
-                    if(other.TYPE == 'FOOD'){
+                    if(other.TYPE === 'FOOD'){
                         replaceFood(other);
                         addTail(other.points);
                         if(snake.lastPlayerTouched === player1){
@@ -158,10 +158,10 @@ define(
                         } else {
                             instance.stats.player2.points += other.points;
                         }
-                    } else if(other.TYPE == 'PLAYER'){
+                    } else if(other.TYPE === 'PLAYER'){
                         snake.lastPlayerTouched = other;
                     }
-                }
+                };
             };
 
             this.initPlayer = function(){
@@ -209,6 +209,6 @@ define(
             var removeItem = function(item){
                 index = instance.items.indexOf(item);
                 instance.items.splice(index, 1);
-            }
+            };
         };
 });

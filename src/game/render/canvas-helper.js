@@ -37,6 +37,6 @@ define(function() {
             gl.compileShader(shader);
             return shader;
         }
-    }
+    };
 
 });

@@ -17,7 +17,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
         this.collidable = true;
         this.static = false;
         this.bounds = new Rectangle(x, y, radius*2, radius*2);
-        this.lastPlayerTouched;
+        this.lastPlayerTouched = null;
 
         this.childs = [];
         this.springs = [];
@@ -26,7 +26,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
             i;
 
         this.update = function(deltaTime){
-            if(this.TYPE == 'SNAKE'){
+            if(this.TYPE === 'SNAKE'){
                 this.velocity.nor().mul(this.speed);
             }
 
@@ -47,7 +47,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
         };
 
         this.correctDirection = function(){
-            if(this.TYPE == 'SNAKE'){
+            if(this.TYPE === 'SNAKE'){
                 if(Math.abs(this.velocity.x / this.velocity.y) < 1){
                     if(this.velocity.x >= 0){
                         this.velocity.x += 0.1;
@@ -56,7 +56,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
                     }
                 }
             }
-        }
+        };
 
         this.addChild = function(child){
             this.childs.push(child);

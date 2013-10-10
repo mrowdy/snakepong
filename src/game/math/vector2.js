@@ -154,5 +154,22 @@ define(function() {
         this.isZero = function() {
             return (this.len() < 0.0001 );
         };
+
+        this.angleTo = function(v){
+            return Math.atan2(v.y - this.y, v.x - this.x);
+        };
+
+        this.rotate = function(rad){
+            var sn = Math.sin(rad);
+            var cs = Math.cos(rad);
+
+            var px = this.x * cs - this.y * sn;
+            var py = this.x * sn + this.y * cs;
+
+            this.x = px;
+            this.y = py;
+
+            return this;
+        };
     };
 });

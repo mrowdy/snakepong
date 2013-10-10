@@ -1,5 +1,8 @@
-define(['app/core', 'game/render/canvas-helper', 'lib/cuon-matrix.js'], function(core, CanvasHelper) {
+define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-matrix.js', ], function(core, CanvasHelper, Vector2) {
     'use strict';
+
+    /*global document */
+    /*global Matrix4 */
 
     return function($canvas){
 
@@ -19,6 +22,12 @@ define(['app/core', 'game/render/canvas-helper', 'lib/cuon-matrix.js'], function
             world,
             camera,
             i,
+            color,
+            FSIZE,
+            vertices = new Float32Array(),
+            vertexBuffer,
+            a_Position,
+            a_Color,
             VSHADER_SOURCE = document.querySelector('#shader-vs').innerHTML,
             FSHADER_SOURCE = document.querySelector('#shader-fs').innerHTML;
 
@@ -28,6 +37,9 @@ define(['app/core', 'game/render/canvas-helper', 'lib/cuon-matrix.js'], function
             CanvasHelper.initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE);
             u_xFormMatrix = gl.getUniformLocation(gl.program, 'u_xFormMatrix');
             u_Resolution = gl.getUniformLocation(gl.program, 'u_Resolution');
+
+            vertexBuffer = gl.createBuffer();
+
             clear();
         };
 
@@ -55,86 +67,40 @@ define(['app/core', 'game/render/canvas-helper', 'lib/cuon-matrix.js'], function
             gl.uniform4f(u_Resolution, camera.size.x, camera.size.y, 1, 1);
             gl.uniformMatrix4fv(u_xFormMatrix, false, xFormMatrix.elements);
 
+            a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+            a_Color = gl.getAttribLocation(gl.program, 'a_Color');
+
             drawBackground();
 
             for(i = 0; i < world.items.length; i++){
-                if(world.items[i].TYPE == 'SNAKE'){
-                    drawSnake(world.items[i]);
-                    continue
-                }
-
-                if(world.items[i].TYPE == 'TAIL'){
-                    continue;
-                }
-
-                drawItem(world.items[i]);
+               drawItem(world.items[i]);
             }
         };
 
         var clear = function(){
             gl.clearColor(0.0, 0.0, 0.0, 0.0);
             gl.clear(gl.COLOR_BUFFER_BIT);
-        }
+        };
 
         var drawBackground = function(){
             drawRect(world.size.x / 2, world.size.y / 2, world.size.x, world.size.y, { r: 1.0, g: 1.0, b: 1.0 });
         };
 
         var drawItem = function(item){
-            var color = { r: 1.0, g: 0.0, b: 0.0 };
-            if(item.TYPE == 'SNAKE'){
+            color = { r: 1.0, g: 0.0, b: 0.0 };
+            if(item.TYPE === 'SNAKE'){
                 color = { r: 0.0, g: 1.0, b: 0.0 };
-            } else if(item.TYPE == 'TAIL'){
+            } else if(item.TYPE === 'TAIL'){
                 color = { r: 0.0, g: 0.9, b: 0.0 };
-            } else if(item.TYPE == 'PLAYER'){
+            } else if(item.TYPE === 'PLAYER'){
                 color = { r: 0.0, g: 0.0, b: 1.0 };
             }
 
             drawRect(item.position.x, item.position.y, item.size.x, item.size.y, color);
-        }
-
-        var drawSnake = function(snake){
-            var vert = getSnakeVertices(snake);
-
-            var vertices = new Float32Array(vert.length);
-            vertices.set(vert);
-            n = vertices.length / 5;
-
-            var FSIZE = vertices.BYTES_PER_ELEMENT;
-
-            var vertexBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
-            var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-            var a_Color = gl.getAttribLocation(gl.program, 'a_Color');
-            gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 5, 0);
-            gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, FSIZE * 5, FSIZE * 2);
-            gl.enableVertexAttribArray(a_Position);
-            gl.enableVertexAttribArray(a_Color);
-
-            gl.drawArrays(gl.LINE_STRIP, 0, n);
-
-        }
-
-        var getSnakeVertices = function(snake){
-            var vertices = [];
-            vertices.push(snake.position.x);
-            vertices.push(snake.position.y);
-            vertices.push(0.1);
-            vertices.push(1.0);
-            vertices.push(0.1);
-
-            if(snake.childs.length > 0){
-                var child = getSnakeVertices(snake.childs[0]);
-                vertices = vertices.concat(child);
-            }
-
-            return vertices;
-        }
+        };
 
         var drawRect = function(x, y, w, h, color){
-            var vertices = new Float32Array([
+            vertices = new Float32Array([
                 x - w / 2, y + h / 2, color.r, color.g, color.b,
                 x - w / 2, y - h / 2, color.r, color.g, color.b,
                 x + w / 2, y + h / 2, color.r, color.g, color.b,
@@ -142,21 +108,18 @@ define(['app/core', 'game/render/canvas-helper', 'lib/cuon-matrix.js'], function
             ]);
             n = 4;
 
-            var FSIZE = vertices.BYTES_PER_ELEMENT;
+            FSIZE = vertices.BYTES_PER_ELEMENT;
 
-            var vertexBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
             gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
-            var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-            var a_Color = gl.getAttribLocation(gl.program, 'a_Color');
             gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 5, 0);
             gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, FSIZE * 5, FSIZE * 2);
             gl.enableVertexAttribArray(a_Position);
             gl.enableVertexAttribArray(a_Color);
 
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
-        }
+        };
 
         var getRatio = function(){
             if(camera){
@@ -168,7 +131,6 @@ define(['app/core', 'game/render/canvas-helper', 'lib/cuon-matrix.js'], function
                 offsetY = $canvas.height / 2 - ( camera.size.y * ratio) / 2;
             }
         };
-
 
         init();
     };

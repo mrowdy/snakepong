@@ -100,7 +100,7 @@ define(['app/core'], function(core) {
             context.translate(x, $canvas.height - y);
             context.fillStyle = getColor(item.TYPE);
 
-            if(item.TYPE === 'SNAKE' || item.TYPE === 'TAIL' || item.TYPE == 'FOOD' ){
+            if(item.TYPE === 'SNAKE' || item.TYPE === 'TAIL' || item.TYPE === 'FOOD' ){
                 context.beginPath();
                 context.arc(0, 0,  worldToCanvas(item.radius), 0, Math.PI*2, true);
                 context.fill();
@@ -131,7 +131,7 @@ define(['app/core'], function(core) {
             context.fillRect(0, 0, ($canvas.width - worldToCanvas(world.size.x)) / 2, $canvas.height);
             context.fillRect($canvas.width, 0, -($canvas.width - worldToCanvas(world.size.x)) / 2, $canvas.height);
 
-        }
+        };
         
         var isVisible = function(item){
             if((item.position.x - item.size.x / 2 > camera.size.x)
