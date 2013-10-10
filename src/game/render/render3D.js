@@ -56,10 +56,19 @@ define(['app/core', 'game/render/canvas-helper', 'lib/cuon-matrix.js'], function
             gl.uniformMatrix4fv(u_xFormMatrix, false, xFormMatrix.elements);
 
             drawBackground();
+
             for(i = 0; i < world.items.length; i++){
+                if(world.items[i].TYPE == 'SNAKE'){
+                    drawSnake(world.items[i]);
+                    continue
+                }
+
+                if(world.items[i].TYPE == 'TAIL'){
+                    continue;
+                }
+
                 drawItem(world.items[i]);
             }
-
         };
 
         var clear = function(){
@@ -82,6 +91,46 @@ define(['app/core', 'game/render/canvas-helper', 'lib/cuon-matrix.js'], function
             }
 
             drawRect(item.position.x, item.position.y, item.size.x, item.size.y, color);
+        }
+
+        var drawSnake = function(snake){
+            var vert = getSnakeVertices(snake);
+
+            var vertices = new Float32Array(vert.length);
+            vertices.set(vert);
+            n = vertices.length / 5;
+
+            var FSIZE = vertices.BYTES_PER_ELEMENT;
+
+            var vertexBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+            var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+            var a_Color = gl.getAttribLocation(gl.program, 'a_Color');
+            gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 5, 0);
+            gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, FSIZE * 5, FSIZE * 2);
+            gl.enableVertexAttribArray(a_Position);
+            gl.enableVertexAttribArray(a_Color);
+
+            gl.drawArrays(gl.LINE_STRIP, 0, n);
+
+        }
+
+        var getSnakeVertices = function(snake){
+            var vertices = [];
+            vertices.push(snake.position.x);
+            vertices.push(snake.position.y);
+            vertices.push(0.1);
+            vertices.push(1.0);
+            vertices.push(0.1);
+
+            if(snake.childs.length > 0){
+                var child = getSnakeVertices(snake.childs[0]);
+                vertices = vertices.concat(child);
+            }
+
+            return vertices;
         }
 
         var drawRect = function(x, y, w, h, color){
