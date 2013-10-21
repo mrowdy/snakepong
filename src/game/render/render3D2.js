@@ -12,7 +12,9 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
 
         var gl,
             n,
-            u_MvpMatrix,
+            xFormMatrix = new Matrix4(),
+            u_xFormMatrix,
+            u_Resolution,
             ratio,
             s1, s2,
             offsetX = 0,
@@ -29,27 +31,12 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             VSHADER_SOURCE = document.querySelector('#shader-vs').innerHTML,
             FSHADER_SOURCE = document.querySelector('#shader-fs').innerHTML;
 
-        var
-            mvpMatrix = new Matrix4(),
-            viewMatrix = new Matrix4(),
-            projMatrix = new Matrix4(),
-            modelMatrix = new Matrix4();
-
 
         var init = function(){
             gl = CanvasHelper.getWebglContext($canvas);
             CanvasHelper.initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE);
-            u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
-
-            projMatrix.setPerspective(30, 300/200, 1, 1000);
-            viewMatrix.setLookAt(
-                150, 100, 373,
-                150, 100, 0,
-                0, 1, 0
-            );
-            mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
-
-            gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
+            u_xFormMatrix = gl.getUniformLocation(gl.program, 'u_xFormMatrix');
+            u_Resolution = gl.getUniformLocation(gl.program, 'u_Resolution');
 
             vertexBuffer = gl.createBuffer();
 
@@ -73,6 +60,12 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             world = objects.world;
             camera = objects.camera;
 
+            if(!ratio){
+                getRatio();
+            }
+
+            gl.uniform4f(u_Resolution, camera.size.x, camera.size.y, 1, 1);
+            gl.uniformMatrix4fv(u_xFormMatrix, false, xFormMatrix.elements);
 
             a_Position = gl.getAttribLocation(gl.program, 'a_Position');
             a_Color = gl.getAttribLocation(gl.program, 'a_Color');
