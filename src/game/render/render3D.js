@@ -40,10 +40,10 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             gl = CanvasHelper.getWebglContext($canvas);
             CanvasHelper.initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE);
             u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
-
+            var height = 100 / Math.tan(15 * (Math.PI/180));
             projMatrix.setPerspective(30, 300/200, 1, 1000);
             viewMatrix.setLookAt(
-                150, 100, 373,
+                150, 100, height,
                 150, 100, 0,
                 0, 1, 0
             );
