@@ -10,7 +10,8 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             return false;
         }
 
-        var gl,
+        var height,
+            gl,
             n,
             u_MvpMatrix,
             ratio,
@@ -40,7 +41,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             gl = CanvasHelper.getWebglContext($canvas);
             CanvasHelper.initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE);
             u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
-            var height = 100 / Math.tan(15 * (Math.PI/180));
+            height = 100 / Math.tan(15 * (Math.PI/180));
             projMatrix.setPerspective(30, 300/200, 1, 1000);
             viewMatrix.setLookAt(
                 150, 100, height,
@@ -53,6 +54,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
 
             vertexBuffer = gl.createBuffer();
 
+            gl.enable(gl.DEPTH_TEST);
             clear();
         };
 
@@ -73,6 +75,14 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             world = objects.world;
             camera = objects.camera;
 
+            viewMatrix.setLookAt(
+                150, 100, height,
+                150, 100, 0,
+                0, 1, 0
+            );
+            mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
+            gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
+
 
             a_Position = gl.getAttribLocation(gl.program, 'a_Position');
             a_Color = gl.getAttribLocation(gl.program, 'a_Color');
@@ -90,7 +100,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
         };
 
         var drawBackground = function(){
-            drawRect(world.size.x / 2, world.size.y / 2, world.size.x, world.size.y, { r: 1.0, g: 1.0, b: 1.0 });
+            drawRect(world.size.x / 2, world.size.y / 2, 0, world.size.x, world.size.y, { r: 1.0, g: 1.0, b: 1.0 });
         };
 
         var drawItem = function(item){
@@ -103,15 +113,15 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
                 color = { r: 0.0, g: 0.0, b: 1.0 };
             }
 
-            drawRect(item.position.x, item.position.y, item.size.x, item.size.y, color);
+            drawRect(item.position.x, item.position.y, 1, item.size.x, item.size.y, color);
         };
 
-        var drawRect = function(x, y, w, h, color){
+        var drawRect = function(x, y, z, w, h, color){
             vertices = new Float32Array([
-                x - w / 2, y + h / 2, color.r, color.g, color.b,
-                x - w / 2, y - h / 2, color.r, color.g, color.b,
-                x + w / 2, y + h / 2, color.r, color.g, color.b,
-                x + w / 2, y - h / 2, color.r, color.g, color.b
+                x - w / 2, y + h / 2, z, color.r, color.g, color.b,
+                x - w / 2, y - h / 2, z, color.r, color.g, color.b,
+                x + w / 2, y + h / 2, z, color.r, color.g, color.b,
+                x + w / 2, y - h / 2, z, color.r, color.g, color.b
             ]);
             n = 4;
 
@@ -120,8 +130,8 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
             gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
-            gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 5, 0);
-            gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, FSIZE * 5, FSIZE * 2);
+            gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, FSIZE * 6, 0);
+            gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, FSIZE * 6, FSIZE * 3);
             gl.enableVertexAttribArray(a_Position);
             gl.enableVertexAttribArray(a_Color);
 
