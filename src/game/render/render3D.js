@@ -13,34 +13,38 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
         var height,
             gl,
             n,
-            u_MvpMatrix,
             ratio,
             s1, s2,
             offsetX = 0,
             offsetY = 0,
             world,
             camera,
-            i,
-            color,
+            i;
+
+        var mvpMatrix = new Matrix4(),
+            viewMatrix = new Matrix4(),
+            projMatrix = new Matrix4(),
+            modelMatrix = new Matrix4(),
+
             FSIZE,
             vertices = new Float32Array(),
             vertexBuffer,
+
+            u_MvpMatrix,
             a_Position,
-            a_Color,
-            VSHADER_SOURCE = document.querySelector('#shader-vs').innerHTML,
+            a_Color;
+
+        var VSHADER_SOURCE = document.querySelector('#shader-vs').innerHTML,
             FSHADER_SOURCE = document.querySelector('#shader-fs').innerHTML;
-
-        var
-            mvpMatrix = new Matrix4(),
-            viewMatrix = new Matrix4(),
-            projMatrix = new Matrix4(),
-            modelMatrix = new Matrix4();
-
 
         var init = function(){
             gl = CanvasHelper.getWebglContext($canvas);
             CanvasHelper.initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE);
+
             u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
+            a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+            a_Color = gl.getAttribLocation(gl.program, 'a_Color');
+
             height = 100 / Math.tan(15 * (Math.PI/180));
             projMatrix.setPerspective(30, 300/200, 1, 1000);
             viewMatrix.setLookAt(
@@ -48,11 +52,12 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
                 150, 100, 0,
                 0, 1, 0
             );
-            mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
+
+            updateMvp();
 
             gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
-
             vertexBuffer = gl.createBuffer();
+            initVertexBuffer();
 
             gl.enable(gl.DEPTH_TEST);
             gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -81,14 +86,12 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
                 150, 100, 0,
                 0, 1, 0
             );
-            mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
+
+            updateMvp();
             gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
 
-
-            a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-            a_Color = gl.getAttribLocation(gl.program, 'a_Color');
-
-            drawBackground();
+            clear();
+            //drawBackground();
 
             for(i = 0; i < world.items.length; i++){
                drawItem(world.items[i]);
@@ -104,24 +107,17 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
         };
 
         var drawItem = function(item){
-            color = { r: 1.0, g: 0.0, b: 0.0 };
-            if(item.TYPE === 'SNAKE'){
-                color = { r: 0.0, g: 1.0, b: 0.0 };
-            } else if(item.TYPE === 'TAIL'){
-                color = { r: 0.0, g: 0.9, b: 0.0 };
-            } else if(item.TYPE === 'PLAYER'){
-                color = { r: 0.0, g: 0.0, b: 1.0 };
-            }
-
-            drawRect(item.position.x, item.position.y, 1, item.size.x, item.size.y, color);
+            modelMatrix.setTranslate(item.position.x, item.position.y, 1);
+            modelMatrix.scale(item.size.x / 2, item.size.y / 2, 5);
+            drawRect();
         };
 
-        var drawRect = function(x, y, z, w, h, color){
+        var initVertexBuffer = function(){
             vertices = new Float32Array([
-                x - w / 2, y + h / 2, z, color.r, color.g, color.b,
-                x - w / 2, y - h / 2, z, color.r, color.g, color.b,
-                x + w / 2, y + h / 2, z, color.r, color.g, color.b,
-                x + w / 2, y - h / 2, z, color.r, color.g, color.b
+                -1.0,  1.0, 1, 1, 0, 0,
+                -1.0, -1.0, 1, 1, 0, 0,
+                1.0,  1.0, 1, 1, 0, 0,
+                1.0, -1.0, 1, 1, 0, 0
             ]);
             n = 4;
 
@@ -135,6 +131,12 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             gl.enableVertexAttribArray(a_Position);
             gl.enableVertexAttribArray(a_Color);
 
+            return n;
+        }
+
+        var drawRect = function(){
+            updateMvp();
+            gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
         };
 
@@ -148,6 +150,10 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
                 offsetY = $canvas.height / 2 - ( camera.size.y * ratio) / 2;
             }
         };
+
+        var updateMvp = function(){
+            mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
+        }
 
         init();
     };
