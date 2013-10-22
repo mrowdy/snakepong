@@ -55,6 +55,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             vertexBuffer = gl.createBuffer();
 
             gl.enable(gl.DEPTH_TEST);
+            gl.clearColor(0.0, 0.0, 0.0, 0.0);
             clear();
         };
 
@@ -95,8 +96,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
         };
 
         var clear = function(){
-            gl.clearColor(0.0, 0.0, 0.0, 0.0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
         };
 
         var drawBackground = function(){
