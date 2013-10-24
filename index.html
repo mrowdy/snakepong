@@ -8,27 +8,66 @@
     <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <script id="shader-fs" type="x-shader/x-fragment">
-        precision mediump float;
-        varying vec4 v_Color;
 
-        void main() {
-            gl_FragColor = v_Color;
-        }
-    </script>
     <script id="shader-vs" type="x-shader/x-vertex">
         attribute vec4 a_Position;
         attribute vec4 a_Color;
+        attribute vec4 a_Normal;
 
+        uniform mat4 u_ModelMatrix;
         uniform mat4 u_MvpMatrix;
+        uniform mat4 u_NormalMatrix;
+
         varying vec4 v_Color;
+        varying vec3 v_Normal;
+        varying vec3 v_Position;
 
         void main() {
 
             gl_Position = u_MvpMatrix * a_Position;
+            v_Position = vec3(u_ModelMatrix * a_Position);
+            v_Normal = normalize(vec3(u_NormalMatrix * a_Normal));
             v_Color = a_Color;
         }
     </script>
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+        precision mediump float;
+
+        uniform vec3 u_AmbientLight;
+
+        uniform vec3 u_LightColor1;
+        uniform vec3 u_LightPosition1;
+        uniform vec3 u_LightColor2;
+        uniform vec3 u_LightPosition2;
+        uniform vec3 u_LightColor3;
+        uniform vec3 u_LightPosition3;
+
+        varying vec4 v_Color;
+        varying vec3 v_Normal;
+        varying vec3 v_Position;
+
+        void main() {
+        vec3 normal = normalize(v_Normal);
+
+            vec3 lightDirection1 = normalize(u_LightPosition1 - v_Position);
+            float nDotL1 = max(dot(lightDirection1, normal), 0.0);
+            vec3 diffuse1 = u_LightColor1 * v_Color.rgb * nDotL1;
+
+            vec3 lightDirection2 = normalize(u_LightPosition2 - v_Position);
+            float nDotL2 = max(dot(lightDirection2, normal), 0.0);
+            vec3 diffuse2 = u_LightColor2 * v_Color.rgb * nDotL2;
+
+            vec3 lightDirection3 = normalize(u_LightPosition3 - v_Position);
+            float nDotL3 = max(dot(lightDirection3, normal), 0.0);
+            vec3 diffuse3 = u_LightColor3 * v_Color.rgb * nDotL3;
+
+            vec3 ambient = u_AmbientLight * v_Color.rgb;
+
+            gl_FragColor = vec4(diffuse3 + diffuse2 + diffuse1 + ambient, v_Color.a);
+        }
+    </script>
+
 </head>
 <body>
 
