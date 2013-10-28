@@ -32,6 +32,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             normals = new Float32Array(),
             indices = new Uint8Array(),
             buffer,
+            bufferType,
             vertexBuffer,
             indexBuffer,
 
@@ -91,9 +92,13 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
 
             updateMvp();
 
+            normalMatrix.setInverseOf(modelMatrix);
+            normalMatrix.transpose();
+
             gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
+            gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
             vertexBuffer = gl.createBuffer();
-            n = initVertexBuffer();
+            n = initBallBuffer();
 
             gl.enable(gl.DEPTH_TEST);
             gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -143,12 +148,28 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
         };
 
         var drawItem = function(item){
-            modelMatrix.setTranslate(item.position.x, item.position.y, 1);
-            modelMatrix.scale(item.size.x / 2, item.size.y / 2, 5);
+
+            if(item.TYPE == 'SNAKE' || item.TYPE == 'TAIL' || item.TYPE == 'FOOD'){
+                if(bufferType !== 'ball'){
+                    n = initBallBuffer();
+                }
+                modelMatrix.setTranslate(item.position.x, item.position.y, 1);
+                modelMatrix.scale(item.size.x / 2, item.size.y / 2, 5);
+                modelMatrix.rotate(90, 1, 0, 0);
+                modelMatrix.rotate(180, 0, 1, 0);
+            } else {
+                if(bufferType !== 'cube'){
+                    n = initCubeBuffer();
+                }
+                modelMatrix.setTranslate(item.position.x, item.position.y, 1);
+                modelMatrix.scale(item.size.x / 2, item.size.y / 2, 5);
+            }
+
             drawRect();
         };
 
-        var initVertexBuffer = function(){
+        var initCubeBuffer = function(){
+            bufferType = 'cube';
             vertices = new Float32Array([
                 1.0, 1.0, 1.0,  -1.0, 1.0, 1.0,  -1.0,-1.0, 1.0,   1.0,-1.0, 1.0,  // v0-v1-v2-v3 front
                 1.0, 1.0, 1.0,   1.0,-1.0, 1.0,   1.0,-1.0,-1.0,   1.0, 1.0,-1.0,  // v0-v3-v4-v5 right
@@ -196,6 +217,71 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
 
             return indices.length;
         }
+
+        var initBallBuffer = function(){
+            bufferType = 'ball';
+            var SPHERE_DIV = 20;
+
+            var i, ai, si, ci;
+            var j, aj, sj, cj;
+            var p1, p2;
+
+            var positions = [];
+            var colors = [];
+            var normals = [];
+            var indices = [];
+
+            for (j = 0; j <= SPHERE_DIV; j++) {
+                aj = j * Math.PI / SPHERE_DIV;
+                sj = Math.sin(aj);
+                cj = Math.cos(aj);
+                for (i = 0; i <= SPHERE_DIV; i++) {
+                    ai = i * 2 * Math.PI / SPHERE_DIV;
+                    si = Math.sin(ai);
+                    ci = Math.cos(ai);
+
+                    positions.push(si * sj);
+                    positions.push(cj);
+                    positions.push(ci * sj);
+
+                    normals.push(si * sj);
+                    normals.push(cj);
+                    normals.push(ci * sj);
+
+                    colors.push(1.0);
+                    colors.push(1.0);
+                    colors.push(1.0);
+                }
+            }
+
+
+
+            for (j = 0; j < SPHERE_DIV; j++) {
+                for (i = 0; i < SPHERE_DIV; i++) {
+                    p1 = j * (SPHERE_DIV+1) + i;
+                    p2 = p1 + (SPHERE_DIV+1);
+
+                    indices.push(p1);
+                    indices.push(p2);
+                    indices.push(p1 + 1);
+
+                    indices.push(p1 + 1);
+                    indices.push(p2);
+                    indices.push(p2 + 1);
+                }
+            }
+
+            indexBuffer = gl.createBuffer();
+
+            initArrayBuffer(new Float32Array(positions), 3, 'a_Position');
+            initArrayBuffer(new Float32Array(normals),  3, 'a_Normal');
+            initArrayBuffer(new Float32Array(colors),   3, 'a_Color');
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+            return indices.length;
+        };
 
         var initArrayBuffer = function(data, num, attribute){
             buffer = gl.createBuffer();
