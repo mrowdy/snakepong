@@ -156,7 +156,6 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
                 modelMatrix.setTranslate(item.position.x, item.position.y, 1);
                 modelMatrix.scale(item.size.x / 2, item.size.y / 2, 5);
                 modelMatrix.rotate(90, 1, 0, 0);
-                modelMatrix.rotate(180, 0, 1, 0);
             } else {
                 if(bufferType !== 'cube'){
                     n = initCubeBuffer();
