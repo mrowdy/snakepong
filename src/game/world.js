@@ -21,6 +21,7 @@ define(
             this.gravity = new Vector2(0, 0);
             this.roundOver = true;
             this.round = 1;
+            this.maxFood = 10;
 
             this.items = [];
 
@@ -76,6 +77,7 @@ define(
 
             var addFood = function(){
                 for(i = 0; i < 5; i++){
+                    instance.maxFood--;
                     var food = new Food(
                         Math.random() * (instance.size.x  - 40) + 20,
                         Math.random() * (instance.size.y - 40) + 20,
@@ -86,8 +88,15 @@ define(
             };
 
             var replaceFood = function(item){
-                item.position.x = Math.random() * (instance.size.x  - 40) + 20;
-                item.position.y = Math.random() * (instance.size.y  - 40) + 20;
+
+                if(instance.maxFood > 0){
+                    instance.maxFood--;
+                    item.position.x = Math.random() * (instance.size.x  - 40) + 20;
+                    item.position.y = Math.random() * (instance.size.y  - 40) + 20;
+                } else {
+                    removeItem(item);
+                }
+
             };
 
             this.initWorld = function(){
@@ -151,13 +160,13 @@ define(
                 snake.velocity = new Vector2(2, 0);
                 snake.collision = function(other){
                     if(other.TYPE === 'FOOD'){
-                        replaceFood(other);
                         addTail(other.points);
                         if(snake.lastPlayerTouched === player1){
                             instance.stats.player1.points += other.points;
                         } else {
                             instance.stats.player2.points += other.points;
                         }
+                        replaceFood(other);
                     } else if(other.TYPE === 'PLAYER'){
                         snake.lastPlayerTouched = other;
                     }
