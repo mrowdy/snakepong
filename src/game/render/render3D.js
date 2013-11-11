@@ -19,6 +19,8 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             offsetY = 0,
             world,
             camera,
+            player1,
+            player2,
             i;
 
         var mvpMatrix = new Matrix4(),
@@ -121,6 +123,9 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
         this.draw = function(objects){
             world = objects.world;
             camera = objects.camera;
+
+            player1 = world.getPlayer1();
+            player2 = world.getPlayer2();
 
             viewMatrix.setLookAt(
                 150, 100, height,
@@ -302,6 +307,11 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
             gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
             gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
+
+
+
+            gl.uniform3f(u_LightPosition2, 10.0, player1.position.y, 1.0);
+            gl.uniform3f(u_LightPosition3, 290.0, player2.position.y, 1.0);
 
             gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
         };

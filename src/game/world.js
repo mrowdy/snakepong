@@ -180,6 +180,13 @@ define(
 
             this.initWorld();
 
+            this.getPlayer1 = function(){
+                return player1;
+            }
+            this.getPlayer2 = function(){
+                return player2;
+            }
+
             this.update = function(deltaTime){
                 deltaG.copyFrom(this.gravity);
                 deltaG.mul(deltaTime);
