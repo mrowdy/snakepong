@@ -149,7 +149,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
 
         var drawItem = function(item){
 
-            if(item.TYPE == 'SNAKE' || item.TYPE == 'TAIL' || item.TYPE == 'FOOD'){
+            if(item.TYPE === 'SNAKE' || item.TYPE === 'TAIL' || item.TYPE === 'FOOD'){
                 if(bufferType !== 'ball'){
                     n = initBallBuffer();
                 }
@@ -215,7 +215,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
             return indices.length;
-        }
+        };
 
         var initBallBuffer = function(){
             bufferType = 'ball';
@@ -294,7 +294,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
             gl.enableVertexAttribArray(a_Attribute);
 
             return true;
-        }
+        };
 
         var drawRect = function(){
             updateMvp();
@@ -319,7 +319,7 @@ define(['app/core', 'game/render/canvas-helper', 'game/math/vector2', 'lib/cuon-
 
         var updateMvp = function(){
             mvpMatrix.set(projMatrix).multiply(viewMatrix).multiply(modelMatrix);
-        }
+        };
 
         init();
     };
