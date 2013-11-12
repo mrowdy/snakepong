@@ -160,7 +160,7 @@ define(
                 snake.velocity = new Vector2(2, 0);
                 snake.collision = function(other){
                     if(other.TYPE === 'FOOD'){
-                        addTail(other.points);
+                        addTail(1);
                         if(snake.lastPlayerTouched === player1){
                             instance.stats.player1.points += other.points;
                         } else {
