@@ -49,8 +49,8 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle'], function(c
 
                 var diff =  (other.position.y - this.position.y) / 10;
                 other.velocity.y += diff;
-                //this.speed *= 1.1;
-                //other.velocity.mul(1.1);
+                other.speed *= 1.02;
+                this.speed *= 1.022;
             }
 
             if(other.TYPE === 'WALL'){

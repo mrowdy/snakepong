@@ -11,6 +11,7 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
         this.velocity = new Vector2(0, 0);
 
         this.speed = 3;
+        this.maxSpeed = 4.5;
         this.friction = 0.000;
         this.affectedByGravity = true;
 
@@ -26,6 +27,10 @@ define(['app/core', 'game/math/vector2', 'game/collision/rectangle', 'game/math/
             i;
 
         this.update = function(deltaTime){
+            if(this.speed > this.maxSpeed){
+                this.speed = this.maxSpeed;
+            }
+
             if(this.TYPE === 'SNAKE'){
                 this.velocity.nor().mul(this.speed);
             }
