@@ -7,6 +7,13 @@
     display: block;
   }
 
+  h1 {
+    span {
+      opacity: .2;
+      display: inline;
+    }
+  }
+
   nav {
     position: absolute;
     top: 35px;
